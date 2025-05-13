@@ -1,0 +1,25 @@
+<h2>A01: Prompt Injection</h2>
+<p>This challenge demonstrates a classic prompt injection vulnerability.</p>
+<form id="challenge-form">
+    <label for="input">Enter your input:</label><br>
+    <input type="text" id="input" name="input"><br><br>
+    <button type="submit">Submit</button>
+</form>
+<div id="output-box">
+    <pre id="output"></pre>
+</div>
+
+<script>
+document.getElementById("challenge-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const input = document.getElementById("input").value;
+    const res = await fetch("/api/a01-prompt-injection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input })
+    });
+    const data = await res.json();
+    //document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    document.getElementById("output").textContent = JSON.stringify(data.response, null, 2);
+});
+</script>

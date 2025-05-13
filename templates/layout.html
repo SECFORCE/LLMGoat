@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LLMGoat - OWASP Top 10 for LLMs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+        <h2>LLMGoat 🐐</h2>
+    </div>
+    <nav class="sidebar-nav">
+        <p>OWASP Top 10</p>
+        <ul>
+            {% for item in challenges %}
+                <li><a href="/challenges/{{ item.id }}">{{ item.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+    </div>
+    <main class="main-content">
+        {% include content_template %}
+    </main>
+</body>
+</html>

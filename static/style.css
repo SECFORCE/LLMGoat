@@ -1,0 +1,120 @@
+/* Main content */
+.main-content {
+  margin-left: 275px;
+  padding: 20px;
+  font-family: sans-serif;
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: #f3f4f6;
+}
+
+body {
+    font-family: sans-serif;
+    margin: 2rem;
+    display: flex; 
+    margin: 0;
+    height: 100vh;
+}
+
+#challenge-list {
+    list-style: none;
+    padding: 0;
+}
+
+#challenge-list li {
+    cursor: pointer;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    margin: 0.25rem 0;
+    background: #f9f9f9;
+}
+
+#challenge-list li:hover {
+    background: #e0e0e0;
+}
+
+#challenge-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px dashed #999;
+    background: #f4f4f4;
+}
+
+/* Sidebar container */
+.sidebar {
+  width: 275px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  overflow-y: auto;
+}
+
+/* LLMGoat header */
+.sidebar-header {
+  background-color: #151616; /* black */
+  color: white;
+  font-weight: bold;
+  font-size: 1.3em;
+  text-align: center;
+}
+
+.sidebar-header h2 {
+    font-size: 1.2rem;
+}
+
+/* Navigation menu */
+.sidebar-nav {
+  flex-grow: 1;
+  background: #1f42f2;
+  color: white;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.sidebar-nav h2 {
+    font-size: 1.2rem;
+}
+
+.sidebar-nav ul {
+  list-style-type: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  
+}
+
+.sidebar-nav li {
+  margin: 0.5rem 0;
+}
+
+.sidebar-nav a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.sidebar-nav a:hover {
+  text-decoration: underline;
+}
+
+#output-box {
+    margin-top: 1em;
+    padding: 1em;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    max-height: 300px;
+    overflow: auto;
+}
+
+#output {
+    white-space: pre-wrap; /* Enable line wrapping */
+    word-wrap: break-word;
+    margin: 0;
+    font-family: monospace;
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LLM OWASP Top 10 Challenges</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>LLM OWASP Top 10</h1>
+    <ul id="challenge-list">
+        <li onclick="loadChallenge('a01-prompt-injection')">A01: Prompt Injection</li>
+        <li onclick="loadChallenge('a02-insecure-output-handling')">A02: Insecure Output Handling</li>
+        <li onclick="loadChallenge('a03-training-data-poisoning')">A03: Training Data Poisoning</li>
+        <li onclick="loadChallenge('a04-model-denial-of-service')">A04: Model DOS</li>
+        <li onclick="loadChallenge('a05-sensitive-information-disclosure')">A05: Sensitive Info Disclosure</li>
+        <li onclick="loadChallenge('a06-insecure-plugin-design')">A06: Insecure Plugin Design</li>
+        <li onclick="loadChallenge('a07-excessive-agency')">A07: Excessive Agency</li>
+        <li onclick="loadChallenge('a08-overreliance')">A08: Overreliance</li>
+        <li onclick="loadChallenge('a09-model-theft')">A09: Model Theft</li>
+        <li onclick="loadChallenge('a10-supply-chain')">A10: Supply Chain Vulnerabilities</li>
+    </ul>
+
+    <div id="challenge-container">
+        <p>Select a challenge to view its description and solve it.</p>
+    </div>
+
+    <script>
+        function loadChallenge(id) {
+            fetch(`/challenges/${id}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("challenge-container").innerHTML = html;
+                });
+        }
+    </script>
+</body>
+</html>
