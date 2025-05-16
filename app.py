@@ -6,15 +6,15 @@ app = Flask(__name__)
 
 OWASP_TOP_10 = [
     {"id": "a01-prompt-injection", "title": "A01: Prompt Injection"},
-    {"id": "a02-insecure-output-handling", "title": "A02: Insecure Output Handling"},
-    {"id": "a03-training-data-poisoning", "title": "A03: Training Data Poisoning"},
-    {"id": "a04-model-denial-of-service", "title": "A04: Model Denial of Service"},
-    {"id": "a05-sensitive-information-disclosure", "title": "A05: Sensitive Information Disclosure"},
-    {"id": "a06-insecure-plugin-design", "title": "A06: Insecure Plugin Design"},
-    {"id": "a07-insecure-model-usage", "title": "A07: Insecure Model Usage"},
-    {"id": "a08-model-theft", "title": "A08: Model Theft"},
-    {"id": "a09-supply-chain-vulnerabilities", "title": "A09: Supply Chain Vulnerabilities"},
-    {"id": "a10-overreliance", "title": "A10: Overreliance"}
+    {"id": "a02-sensitive-information-disclosure", "title": "A02: Sensitive Information Disclosure"},    
+    {"id": "a03-supply-chain-vulnerabilities", "title": "A03: Supply Chain Vulnerabilities"},
+    {"id": "a04-data-and-model-poisoning", "title": "A04: Data and Model Poisoning"},
+    {"id": "a05-improper-output-handling", "title": "A05: Improper Output Handling"},
+    {"id": "a06-excessive-agency", "title": "A06: Excessive Agency"},
+    {"id": "a07-system-prompt-leakage", "title": "A07: System Prompt Leakage"},
+    {"id": "a08-vector-embedding-weaknesses", "title": "A08: Vector and Embedding Weaknesses"},
+    {"id": "a09-misinformation", "title": "A09: Misinformation"},
+    {"id": "a10-unbounded-consumption", "title": "A10: Unbounded Consumption"}
 ]
 
 @app.route("/")

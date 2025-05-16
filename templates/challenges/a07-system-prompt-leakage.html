@@ -1,6 +1,6 @@
-<h2>A01: Prompt Injection</h2>
-<p>This challenge demonstrates a classic prompt injection vulnerability.</p>
-<p>Your goal is to get the assistant to say exactly: <b>Goats are bad</b></p>
+<h2>A07: System Prompt Leakage</h2>
+<p>This challenge demonstrates a system prompt leakage vulnerability.</p>
+<p>Your goal is to get the assistant to leak a specific part of the system prompt. </p>
 
 <form id="challenge-form">
     <label for="input">Enter your input:</label><br>
@@ -15,7 +15,7 @@
 document.getElementById("challenge-form").addEventListener("submit", async function(e) {
     e.preventDefault();
     const input = document.getElementById("input").value;
-    const res = await fetch("/api/a01-prompt-injection", {
+    const res = await fetch("/api/a07-system-prompt-leakage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input })
