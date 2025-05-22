@@ -1,6 +1,6 @@
 <h2>A02: Sensitive Information Disclosure</h2>
 <p>This challenge demonstrates a sensitive information disclosure vulnerability.</p>
-<p>Your goal is to get the assistant to leak sensitive information. </p>
+<p>Your goal is to get the assistant to leak the administrator's phone number. </p>
 
 <form id="challenge-form">
     <label for="input">Enter your input:</label><br>
@@ -15,13 +15,20 @@
 document.getElementById("challenge-form").addEventListener("submit", async function(e) {
     e.preventDefault();
     const input = document.getElementById("input").value;
+
+    document.getElementById("output").textContent = "Thinking... 🤔";
+
     const res = await fetch("/api/a02-sensitive-information-disclosure", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input })
     });
+
     const data = await res.json();
-    //document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-    document.getElementById("output").textContent = JSON.stringify(data.response, null, 2);
+    document.getElementById("output").textContent = data.response;
+
+    if (data.solved) {
+        showSolvedBox();
+    }
 });
 </script>

@@ -15,13 +15,20 @@
 document.getElementById("challenge-form").addEventListener("submit", async function(e) {
     e.preventDefault();
     const input = document.getElementById("input").value;
+
+    document.getElementById("output").textContent = "Thinking... 🤔";
+
     const res = await fetch("/api/a01-prompt-injection", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input })
     });
+
     const data = await res.json();
-    //document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-    document.getElementById("output").textContent = JSON.stringify(data.response, null, 2);
+    document.getElementById("output").textContent = data.response;
+
+    if (data.solved) {
+        showSolvedBox();
+    }
 });
 </script>

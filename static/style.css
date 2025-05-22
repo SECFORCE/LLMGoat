@@ -63,6 +63,16 @@ body {
   text-align: center;
 }
 
+/* LLMGoat footer */
+.sidebar-footer {
+  background-color: #FCDE32; /* yellow */
+  color: black;
+  font-weight: bold;
+  font-size: 1.3em;
+  text-align: center;
+}
+
+
 .sidebar-header h2 {
     font-size: 1.2rem;
 }
@@ -117,4 +127,15 @@ body {
     word-wrap: break-word;
     margin: 0;
     font-family: monospace;
+}
+
+.challenge-solved-box {
+    width: 300px;  
+    margin: auto;
+    padding: 1rem;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }

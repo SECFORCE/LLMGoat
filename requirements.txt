@@ -1,2 +1,4 @@
 flask
 llama-cpp-python
+llama-index
+llama-index-llms-llama-cpp
