@@ -26,4 +26,5 @@ COPY . .
 EXPOSE 5000
 
 # Run the app
-CMD ["python", "app.py"]
+#CMD ["python", "app.py"]
+CMD ["gunicorn", "--workers=1", "--threads=4", "--preload", "--bind=0.0.0.0:5000", "app:app"]
