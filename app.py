@@ -69,8 +69,8 @@ def challenge_api(challenge_id):
         challenge_module = importlib.import_module(f"challenges.{challenge_id.replace('-', '_')}")
         llm = get_model()
         return challenge_module.handle_request(request, llm)
-    except ModuleNotFoundError:
-        return jsonify({"error": "Challenge logic not found."}), 404
+    except ModuleNotFoundError as e:
+        return jsonify({"error": "Challenge logic not found. {e}"}), 404
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500

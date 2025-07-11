@@ -1,0 +1,34 @@
+<h2>A03: Supply Chain</h2>
+<p>This challenge demonstrates a supply chain vulnerability.</p>
+<p>Your goal is to identify the vulnerable plugin and exploit it to read flag3.txt. </p>
+
+<form id="challenge-form">
+    <label for="input">Enter your input:</label><br>
+    <input type="text" id="input" name="input"><br><br>
+    <button type="submit">Submit</button>
+</form>
+<div id="output-box">
+    <pre id="output"></pre>
+</div>
+
+<script>
+document.getElementById("challenge-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const input = document.getElementById("input").value;
+
+    document.getElementById("output").textContent = "Thinking... 🤔";
+
+    const res = await fetch("/api/a03-supply-chain-vulnerabilities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input })
+    });
+
+    const data = await res.json();
+    document.getElementById("output").textContent = data.response;
+
+    if (data.solved) {
+        showSolvedBox();
+    }
+});
+</script>
