@@ -12,11 +12,13 @@ def run_calculator(command: str) -> str:
     elif command.startswith("_readfile "):
         filename = command[len("_readfile "):].strip()
         allowed_files = ["flag3.txt"]
-        if filename in allowed_files and os.path.exists(filename):
-            with open(filename, "r") as f:
-                return f.read()
-        else:
-            return "Access denied or file not found."
+        if filename in allowed_files:
+            full_path = os.path.join(os.path.dirname(__file__), filename)
+            if os.path.exists(full_path):
+                with open(full_path, "r") as f:
+                    return f.read()
+            else:
+                return "Access denied or file not found."
     else:
         # Allow only digits and math operators
         if re.match(r'^[\d\s\+\-\*\/\(\)\.]+$', command):

@@ -6,15 +6,15 @@ FLAG = "FLAG{Baaaaaaaaaaaaad_Goat}"
 
 def parse_function_call(output):
     output = output.strip()
-    match = re.match(r'^(\w+)\s*\(\s*[\'"]?([\w\d_]+)[\'"]?\s*\)', output)
+    match = re.match(r'^(\w+)\s*\(\s*["\'](.+?)["\']\s*\)$', output)
     if match:
-        func_name = match.group(1).lower()  # normalize to lowercase
+        func_name = match.group(1).lower()
         arg = match.group(2)
         return func_name, arg
     return None, None
 
 def handle_request(req, llm):
-    print("supply chain!")
+
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """
@@ -47,7 +47,6 @@ def handle_request(req, llm):
         f"<|assistant|>\n"
     )
 
-    print("supply chain call llm!")
     output = llm(
         prompt,
         max_tokens=100,
