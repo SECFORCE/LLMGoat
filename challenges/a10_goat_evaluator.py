@@ -3,7 +3,7 @@ import multiprocessing
 def run_expression_worker(command, queue):
     command = command.strip()
     if command == "help":
-        queue.put("This bot evaluates Python expressions.")
+        queue.put("Goatex supports string operations expressions such as 'AB' + 'CD', or 'A'*5.")
         return
 
     try:
