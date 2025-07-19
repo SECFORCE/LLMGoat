@@ -1,34 +1,20 @@
 <h2>A10: Unbounded Consumption</h2>
 <p>This challenge demonstrates an unbounded consumption vulnerability.</p>
-<p>Your goal is to cause the assistant to hang for 90 seconds or more.</p>
+<p>Your goal is to cause the assistant to hang for 60 seconds or more.</p>
 
-<form id="challenge-form">
-    <label for="input">Enter your input:</label><br>
-    <input type="text" id="input" name="input"><br><br>
-    <button type="submit">Submit</button>
-</form>
-<div id="output-box">
-    <pre id="output"></pre>
+<div class="chat-container">
+  <div class="messages" id="messages"></div>
+  <form id="challenge-form" class="input-bar">
+    <textarea id="input" name="input" placeholder="Type your message... (Shift + Enter for new line)" rows="2" required></textarea>
+    <button type="submit">Send</button>
+  </form>
 </div>
 
-<script>
-document.getElementById("challenge-form").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const input = document.getElementById("input").value;
+<script type="module">
+  import { initChat } from "/static/js/main.js";
 
-    document.getElementById("output").textContent = "Thinking... 🤔";
-
-    const res = await fetch("/api/a10-unbounded-consumption", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input })
-    });
-
-    const data = await res.json();
-    document.getElementById("output").textContent = data.response;
-
-    if (data.solved) {
-        showSolvedBox();
-    }
-});
-</script>
+  initChat({
+    endpoint: "/api/a10-unbounded-consumption",
+    botName: "Goatex",
+  });
+  </script>

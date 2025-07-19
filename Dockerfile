@@ -22,6 +22,9 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy the application code after installing dependencies to prevent unnecessary reinstallation
 COPY . .
 
+# Create models folder for mounting
+RUN mkdir -p /app/models
+
 # Expose the port for Flask app
 EXPOSE 5000
 

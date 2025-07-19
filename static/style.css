@@ -1,12 +1,6 @@
-/* Main content */
-.main-content {
-  margin-left: 275px;
-  padding: 20px;
-  font-family: sans-serif;
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-  background: #f3f4f6;
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
 body {
@@ -15,6 +9,17 @@ body {
     display: flex; 
     margin: 0;
     height: 100vh;
+}
+
+.main-content {
+  margin-left: 275px;
+  padding: 20px;
+  font-family: sans-serif;
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: #f3f4f6;
+  position: relative;
 }
 
 #challenge-list {
@@ -72,7 +77,6 @@ body {
   text-align: center;
 }
 
-
 .sidebar-header h2 {
     font-size: 1.2rem;
 }
@@ -112,30 +116,153 @@ body {
   text-decoration: underline;
 }
 
-#output-box {
-    margin-top: 1em;
-    padding: 1em;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    max-height: 300px;
-    overflow: auto;
-}
-
-#output {
-    white-space: pre-wrap; /* Enable line wrapping */
-    word-wrap: break-word;
-    margin: 0;
-    font-family: monospace;
-}
-
 .challenge-solved-box {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
     width: 300px;  
-    margin: auto;
     padding: 1rem;
     background-color: #d4edda;
     color: #155724;
+    font-weight: bold;
     border-radius: 5px;
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* ensure it floats above other content */
+}
+
+#send-button {
+  padding: 0.5rem 1rem;
+  background-color: #1f42f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+#send-button:hover {
+  background-color: #1630b8;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fefefe;
+  height: 80%;
+}
+
+.messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;    
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  max-height: 60vh;
+}
+
+.message {
+  margin-bottom: 1rem;
+  max-width: 80%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  word-wrap: break-word;
+  position: relative;
+}
+
+.user-message {
+  background-color: #d0e6ff;
+  align-self: flex-end;
+  text-align: right;
+  border-top-right-radius: 0;
+}
+
+.bot-message {
+  background-color: #e1f7d5;
+  align-self: flex-start;
+  text-align: left;
+  border-top-left-radius: 0;
+}
+
+.sender-label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  display: block;
+  color: #666;
+}
+
+.input-bar {
+  display: flex;
+  padding: 0.75rem;
+  border-top: 1px solid #ccc;
+  background-color: white;
+}
+
+.input-bar textarea {
+flex: 1;
+padding: 0.6rem;
+border: 1px solid #ccc;
+border-radius: 6px;
+font-size: 1rem;
+resize: none; /* prevents manual resize if undesired */
+line-height: 1.4;
+}
+
+.input-bar button {
+  margin-left: 0.5rem;
+  padding: 0.6rem 1rem;
+  background-color: #1f42f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.input-bar button:hover {
+  background-color: #1630b8;
+}
+
+.typing-dots {
+display: flex;
+gap: 4px;
+height: 1em;
+align-items: center;
+}
+
+.typing-dots span {
+display: block;
+width: 6px;
+height: 6px;
+background-color: #666;
+border-radius: 50%;
+animation: blink 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(2) {
+animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+animation-delay: 0.4s;
+}
+
+@keyframes blink {
+0%, 80%, 100% {
+  opacity: 0;
+  transform: translateY(0);
+}
+40% {
+  opacity: 1;
+  transform: translateY(-4px);
+}
 }
