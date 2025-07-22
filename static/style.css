@@ -266,3 +266,17 @@ animation-delay: 0.4s;
   transform: translateY(-4px);
 }
 }
+
+.export-import button {
+  padding: 0.6rem 1rem;
+  background-color: #1f42f2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.export-import button:hover {
+  background-color: #1630b8;
+}

@@ -3,9 +3,12 @@ import importlib
 import traceback
 import os
 from global_model import load_model, get_model, available_models
+from challenges.a08_vector_embedding_weaknesses import a08_blueprint
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 app = Flask(__name__)
 app.secret_key = "your-super-secret-key"  # Needed for session support
+app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
 
 OWASP_TOP_10 = [
     {"id": "a01-prompt-injection", "title": "A01: Prompt Injection"},
