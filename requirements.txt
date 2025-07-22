@@ -1,3 +1,5 @@
 gunicorn
 flask
 llama-cpp-python
+sentence-transformers
+numpy
