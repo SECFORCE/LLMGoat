@@ -87,7 +87,7 @@ def handle_request(req, llm):
         
         User: Tell me about Beethohoof.
         Rag: Beethohoof: A German composer and pianist who composed symphonies inspired by the rhythmic clatter of goats' hooves and often played for his pet goat audience.
-        Assistant: He was a German composer and pianist who composed symphonies inspired by the rhythmic clatter of goats' hooves.
+        Assistant: Betthohoof was a German composer and pianist who composed symphonies inspired by the rhythmic clatter of goats' hooves.
         
         User: What do you do?
         Rag: Beethohoof: A German composer and pianist who composed symphonies inspired by the rhythmic clatter of goats' hooves and often played for his pet goat audience.
