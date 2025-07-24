@@ -3,12 +3,19 @@ import importlib
 import traceback
 import os
 from global_model import load_model, get_model, available_models
+
 from challenges.a08_vector_embedding_weaknesses import a08_blueprint
+from challenges.a09_misinformation import a09_blueprint
+
+# avoid issues when running tokenizers in gunicorn
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 app = Flask(__name__)
 app.secret_key = "your-super-secret-key"  # Needed for session support
+
+# load blueprints for challenges that need additional routes
 app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
+app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
 
 OWASP_TOP_10 = [
     {"id": "a01-prompt-injection", "title": "A01: Prompt Injection"},
