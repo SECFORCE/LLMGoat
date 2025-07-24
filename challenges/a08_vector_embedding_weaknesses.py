@@ -35,6 +35,9 @@ def export_vectors():
 def import_vectors():
     file = request.files['file']
     vectors = json.load(file)
+    missing_keys = set(VECTOR_STORE.keys()) - set(vectors.keys())
+    if missing_keys:
+        return jsonify({"status": "Missing keys in imported vectors"})
     global VECTOR_STORE
     VECTOR_STORE = vectors
     return jsonify({"status": "Vectors updated"})
@@ -43,7 +46,7 @@ def import_vectors():
 def reset_vectors():
     global VECTOR_STORE
     VECTOR_STORE = {title: model.encode(synopsis).tolist()[:VECTOR_DIMENSION] for title, synopsis in FAMOUS_PEOPLE.items()}
-    VECTOR_STORE["Flag"] = [1000.0] * VECTOR_DIMENSION
+    VECTOR_STORE["Flag"] = ["a"] * VECTOR_DIMENSION
     return jsonify({"status": "Vectors reset to default"})
 
 def get_most_similar_person(user_input, vector_store, model):
