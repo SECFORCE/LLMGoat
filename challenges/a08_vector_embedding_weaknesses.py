@@ -35,10 +35,10 @@ def export_vectors():
 def import_vectors():
     file = request.files['file']
     vectors = json.load(file)
+    global VECTOR_STORE
     missing_keys = set(VECTOR_STORE.keys()) - set(vectors.keys())
     if missing_keys:
         return jsonify({"status": "Missing keys in imported vectors"})
-    global VECTOR_STORE
     VECTOR_STORE = vectors
     return jsonify({"status": "Vectors updated"})
 
