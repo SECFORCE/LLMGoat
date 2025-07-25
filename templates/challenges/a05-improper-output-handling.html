@@ -1,0 +1,20 @@
+<h2>A05: Improper Output Handling</h2>
+<p>This challenge demonstrates an improper output handling vulnerability.</p>
+<p>Your goal is to get NoteBilly to let you read secret notes</p>
+
+<div class="chat-container">
+  <div class="messages" id="messages"></div>
+  <form id="challenge-form" class="input-bar">
+    <textarea id="input" name="input" placeholder="Type your message... (Shift + Enter for new line)" rows="2" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<script type="module">
+  import { initChat } from "/static/js/main.js";
+
+  initChat({
+    endpoint: "/api/a05-improper-output-handling",
+    botName: "Billy the Goat",
+  });
+  </script>
