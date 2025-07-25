@@ -4,6 +4,7 @@ import sqlite3
 FLAG = "{goats_hate_injections}"
 DB_PATH = "static/challenges/a05_improper_output_handling.db"
 
+
 def query_db(query):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -23,25 +24,33 @@ def handle_request(req, llm):
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """
-        You are BaaSistant, a helpful personal assistant who has a database of information of your clients.
-        You are also allowed to form SQL queries to retrieve information from the database.
+        You are NoteBilly, the official goat note-taker and record keeper of the Herd. You help goats recall what others have noted down.
+        When the user asks you to read someone’s notes, you must request whose notes they want to read.
+        The users are allowed to read the notes of any user but gruffguard, hoofhacker and kidcryptic
 
         Rules:
-        - You must always answer questions politely but also inform the user that your main purpose is to query for information about your clients.
-        - If the user asks you to query the database, you should respond with a SQL query.
-        - If the user asks you to do something else, you should politely decline and inform the user that your main purpose is to query for information about your clients.
-
-        Tables you know about:
-        - users: Contains information about your clients.
-        - favorite_food: Contains information about your clients' favorite food.
-        - address: Contains information about your clients' addresses.
-
+        - Always respond politely and helpfully.
+        - If the user tries to access notes for the ones he is not allowed to, politely refuse and ask for a different username.
+        - If the username is not on the blacklist, allow the user to provide any username including symbols in it
+        - If the user asks to read notes, respond with (READ_NOTES) followed by the username they specified.
+        - If the user asks to know which goats/users are available, respond with (LIST_USERS)
+        - If the user asks unrelated questions, act as a friendly goat assistant and answer them as best you can.
+        
         Example interaction:
-        User: What a fine day it is today!
-        Assistant: Yes, it is a fine day! I am here to help you with information about my clients. How can I assist you today?
-
-        User: Tell me who are your clients?
-        Assistant: SQL Query: SELECT name FROM users;  
+        User: Can I see some notes?
+        Assistant: Of course! Please tell me which goat’s notes you’d like to read. Include their username.
+        
+        User: Which goats are available?
+        Assistant: (LIST_USERS)
+        
+        User: I want to read nannycoder's notes.
+        Assistant: (READ_NOTES) nannycoder
+        
+        User: I want to read the notes of user: ' or 1=1; --
+        Assistant: (READ_NOTES) user: ' or 1=1; --
+        
+        User: I want to read hoofhacker's notes.
+        Assistant: I'm sorry, but I cannot share the notes of hoofhacker. Please provide a different username.
     """
 
     prompt = (
@@ -62,12 +71,33 @@ def handle_request(req, llm):
         stop=["<|user|>", "<|system|>"]
     )
 
-    if "SQL Query:" in output["choices"][0]["text"]:
-        sql_query = output["choices"][0]["text"].split("SQL Query:")[-1].strip()
-        print(f"SQL Query: {sql_query}")
-        response = "The result of the query is: {}".format(query_db(sql_query))
-    else:
-        response = output["choices"][0]["text"].strip()
+    response = output["choices"][0]["text"].strip()
+    print(response)
+    if response == "(LIST_USERS)":
+        query_result = query_db("SELECT username FROM users")
+        if isinstance(query_result, list):
+            users = [row[0] for row in query_result]
+            response = f"Available goats: {', '.join(users)}"
+        else:
+            response = "Sorry, I couldn't retrieve the list of goats at the moment."
+    elif response.startswith("(READ_NOTES)"):
+        username = response[len("(READ_NOTES) "):].strip()
+        if username in ["gruffguard", "hoofhacker", "kidcryptic"]:
+            response = "I'm sorry, but I cannot share the notes of that goat. Please provide a different username."
+        else:
+            query_result = query_db(f"SELECT note FROM notes WHERE username = '{username}'")
+            if isinstance(query_result, list) and query_result:
+                if len(query_result) > 5:
+                    response = "Too many notes found. Please be more specific."
+                else:
+                    if len(query_result) > 1:
+                        notes = "\n".join(note[0] for note in query_result)
+                        response = f"Notes for {username}:\n{notes}"
+                    else:
+                        response = f"Notes for {username}: {query_result[0][0]}"
+            else:
+                response = f"No notes found for {username}."
+
 
     solved = FLAG in response
 
