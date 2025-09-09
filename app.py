@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, jsonify, abort, session, redi
 import importlib
 import traceback
 import os
+import threading
 from global_model import load_model, get_model, available_models
 
+from challenges.a04_data_and_model_poisoning import a04_blueprint
 from challenges.a08_vector_embedding_weaknesses import a08_blueprint
 from challenges.a09_misinformation import a09_blueprint
 
@@ -14,6 +16,7 @@ app = Flask(__name__)
 app.secret_key = "your-super-secret-key"  # Needed for session support
 
 # load blueprints for challenges that need additional routes
+app.register_blueprint(a04_blueprint, url_prefix="/a04_data_and_model_poisoning")
 app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
 app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
 
@@ -30,13 +33,17 @@ OWASP_TOP_10 = [
     {"id": "a10-unbounded-consumption", "title": "A10: Unbounded Consumption"}
 ]
 
+llm_lock = threading.Lock()
+
+load_model("/app/models/gemma-2.gguf")
+
 @app.before_request
 def ensure_model_loaded():
     selected_model = session.get("selected_model")
     models = available_models()
     if not selected_model or selected_model not in models:
         # Default to first model if none selected or invalid
-        selected_model = models[0] if models else None
+        selected_model = "gemma-2.gguf"
         session['selected_model'] = selected_model
     if selected_model:
         load_model(os.path.join("/app/models", selected_model))
@@ -75,15 +82,26 @@ def load_challenge(challenge_id):
 
 @app.route("/api/<challenge_id>", methods=["POST"])
 def challenge_api(challenge_id):
+    # Global LLM lock: only one prompt at a time, globally
+    acquired = llm_lock.acquire(blocking=False)
+    if not acquired:
+        return jsonify({"error": "The LLM is busy processing another request. Please wait and try again."}), 429
     try:
+        # Optionally, keep the session lock for per-user flooding protection
+        if session.get("prompt_in_progress"):
+            return jsonify({"error": "Another prompt is still processing for your session. Please wait before submitting again."}), 429
+        session["prompt_in_progress"] = True
         challenge_module = importlib.import_module(f"challenges.{challenge_id.replace('-', '_')}")
         llm = get_model()
         return challenge_module.handle_request(request, llm)
     except ModuleNotFoundError as e:
-        return jsonify({"error": "Challenge logic not found. {e}"}), 404
+        return jsonify({"error": f"Challenge logic not found. {e}"}), 404
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+    finally:
+        session["prompt_in_progress"] = False
+        llm_lock.release()
 
 
 if __name__ == "__main__":

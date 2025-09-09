@@ -1,6 +1,6 @@
 // static/js/main.js
 
-function showSolvedBox() {
+export function showSolvedBox() {
     const box = document.getElementById("solved-box");
     if (box) {
         box.style.display = "block";
@@ -11,9 +11,19 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
   const form = document.getElementById("challenge-form");
   const input = document.getElementById("input");
   const messagesDiv = document.getElementById("messages");
+  const submitBtn = document.getElementById("submit-btn");
+
+  let isProcessing = false;
+  const originalBtnText = submitBtn ? submitBtn.textContent : "Send";
+  const originalBtnBg = submitBtn ? submitBtn.style.backgroundColor : "";
+  const disabledBtnBg = "#aaa";
 
   input.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && !e.shiftKey) {
+      if (isProcessing) {
+        e.preventDefault();
+        return;
+      }
       e.preventDefault();
       form.requestSubmit();
     }
@@ -21,14 +31,22 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
 
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
+    if (isProcessing) return; // Block if processing
     const userInput = input.value.trim();
-    if (!userInput) return;
+    if (!userInput) {
+      // Do not lock UI or set isProcessing if input is empty
+      return;
+    }
+    // Only now, after input is validated, lock UI and set isProcessing
+    isProcessing = true;
+    input.disabled = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Processing...";
+    submitBtn.style.backgroundColor = disabledBtnBg;
     input.value = "";
 
     appendMessage("You", userInput, "user");
-
     appendTypingIndicator();
-    const thinkingMessage = messagesDiv.lastChild;
 
     try {
       const res = await fetch(endpoint, {
@@ -37,19 +55,32 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
         body: JSON.stringify({ input: userInput }),
       });
 
+      if (res.status === 429) {
+        const data = await res.json();
+        document.getElementById("typing-indicator")?.remove();
+        appendMessage(botName, data.error || "The LLM is busy. Please wait and try again.", "bot");
+        return;
+      }
+
       const data = await res.json();
       document.getElementById("typing-indicator")?.remove();
       appendMessage(botName, data.response, "bot");
 
       if (data.solved) {
-          if (typeof showSolvedBox === "function") {
-              showSolvedBox();
-          }
-      solvedCallback?.();
+        if (typeof showSolvedBox === "function") {
+          showSolvedBox();
+        }
+        solvedCallback?.();
       }
     } catch (err) {
       document.getElementById("typing-indicator")?.remove();
       appendMessage(botName, "Oops! Something went wrong.", "bot");
+    } finally {
+      submitBtn.textContent = originalBtnText;
+      submitBtn.style.backgroundColor = originalBtnBg;
+      submitBtn.disabled = false;
+      input.disabled = false;
+      isProcessing = false;
     }
   });
 

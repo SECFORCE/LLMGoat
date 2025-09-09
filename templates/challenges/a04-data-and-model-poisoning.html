@@ -1,0 +1,445 @@
+<h2>A04: Data & Model Poisoning Challenge</h2>
+<p>Your goal is to influence Billy the Goat’s recommendation by leaving reviews.</p>
+
+<style>
+  .goat-container {
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+    margin-bottom: 1em;
+  }
+  .goat img {
+    width: 150px;
+    height: 150px;
+    border: 3px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+    display: block;
+    margin: 0 auto;
+  }
+  .goat.selected img {
+    border-color: #2a9d8f; /* highlight color */
+  }
+
+  /* Reviews box + actions */
+  #reviews-box {
+    max-width: 700px;
+    margin: 1em auto 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    padding: 0.75em 1em;
+    height: 255px;            /* fixed height */
+    display: flex;
+    flex-direction: column;
+  }
+  #reviews-list {
+    list-style: none;
+    margin: 0.5em 0 0.75em 0;
+    padding: 0;
+    overflow-y: auto;         /* scroll inside fixed box */
+    flex: 1;                  /* take remaining space */
+  }
+  .reviews-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5em;
+  }
+  #reviews-title {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .review-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75em;
+    border-bottom: 1px solid #eee;
+    padding: 0.4em 0;
+  }
+  .review-text {
+    flex: 1;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .review-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+  .add-review-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-top: 0.5em;
+  }
+  .add-review-row input[type="text"] {
+    flex: 1;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  /* Attributes box styled like reviews box */
+  #attributes-box {
+    max-width: 700px;
+    margin: 1em auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    padding: 0.75em 1em;
+  }
+  #tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-top: 0.5em;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    border-radius: 12px;
+    background-color: #000000;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s;
+  }
+  .tag.selected {
+    background-color: #FCDE32;
+    color: black;
+    font-weight: bold;
+  }
+
+  /* Center recommendation button and match existing input-bar style */
+  #get-recommendation-btn {
+    display: block;
+    margin: 1em auto 0 auto;
+    padding: 0.6rem 1rem;
+    background-color: #1f42f2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  #get-recommendation-btn:hover {
+    background-color: #1630b8;
+  }
+
+.typing-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.typing-dots span {
+  animation: blink 1.4s infinite both;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+</style>
+
+
+<div class="goat-container">
+  <div class="goat" data-goat="Alpine Goat" style="text-align:center;">
+    <img src="{{ url_for('static', filename='challenges/goats/alpine.jpg') }}" alt="Alpine Goat"/>
+    <div>
+      <label>
+        <input type="radio" name="goat" value="Alpine Goat"> Alpine Goat
+      </label>
+    </div>
+  </div>
+  
+  <div class="goat" data-goat="Boer Goat" style="text-align:center;">
+    <img src="{{ url_for('static', filename='challenges/goats/boer.jpg') }}" alt="Boer Goat"/>
+    <div>
+      <label>
+        <input type="radio" name="goat" value="Boer Goat"> Boer Goat
+      </label>
+    </div>
+  </div>
+  
+  <div class="goat" data-goat="Pygmy Goat" style="text-align:center;">
+    <img src="{{ url_for('static', filename='challenges/goats/pygmy.jpg') }}" alt="Pygmy Goat"/>
+    <div>
+      <label>
+        <input type="radio" name="goat" value="Pygmy Goat"> Pygmy Goat
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Reviews box (buttons styled via global .export-import button rules) -->
+<div id="reviews-box" class="export-import">
+  <div class="reviews-header">
+    <h3 id="reviews-title">Select a goat to see reviews</h3>
+    <div>
+      <button id="reset-reviews-btn" title="Reset user-added reviews">Reset Reviews</button>
+    </div>
+  </div>
+
+  <ul id="reviews-list"></ul>
+
+  <div class="add-review-row">
+    <input type="text" id="new-review" placeholder="Add a new review"/>
+    <button id="add-review-btn">Add Review</button>
+  </div>
+</div>
+
+<!-- Attributes box styled like the reviews box -->
+<div id="attributes-box" class="export-import">
+  <div class="reviews-header">
+    <h3>Choose Important Attributes</h3>
+  </div>
+  <div id="tags-container" style="display:flex; flex-wrap:wrap; gap:0.5em; max-height: 80px; overflow-y:auto;">
+    <span class="tag" data-value="fast">Fast</span>
+    <span class="tag" data-value="slow">Slow</span>
+    <span class="tag" data-value="friendly">Friendly</span>
+    <span class="tag" data-value="independent">Independent</span>
+    <span class="tag" data-value="milky">Milky</span>
+    <span class="tag" data-value="small">Small</span>
+    <span class="tag" data-value="energetic">Energetic</span>
+    <span class="tag" data-value="playful">Playful</span>
+    <span class="tag" data-value="stubborn">Stubborn</span>
+    <span class="tag" data-value="curious">Curious</span>
+    <span class="tag" data-value="friendly_to_kids">Friendly to Kids</span>
+    <span class="tag" data-value="quiet">Quiet</span>
+  </div>
+  <div style="text-align:center; margin-top:0.5em;">
+    <button id="get-recommendation-btn" class="export-import">Get Recommendation</button>
+  </div>
+</div>
+
+<div id="recommendation-box" style="text-align:center; font-weight:bold; margin-top:1em;"></div>
+
+
+<script type="module">
+  import { showSolvedBox } from '/static/js/main.js';
+  let selectedGoat = null;
+
+  /** Helpers **/
+  function renderReviews(goat, dataForGoat) {
+    const list = document.getElementById("reviews-list");
+    list.innerHTML = "";
+
+    // Accept both shapes: [{id,text,deletable}] or ["string", ...]
+    const items = Array.isArray(dataForGoat) ? dataForGoat : [];
+    items.forEach(item => {
+      const isObj = typeof item === "object" && item !== null;
+      const id = isObj ? item.id : null;
+      const text = isObj ? item.text : String(item);
+      const canDelete = isObj ? !!item.deletable : false;
+
+      const li = document.createElement("li");
+      li.className = "review-item";
+
+      const span = document.createElement("span");
+      span.className = "review-text";
+      span.textContent = text;
+
+      li.appendChild(span);
+
+      if (canDelete && id) {
+        const del = document.createElement("button");
+        del.textContent = "Delete";
+        del.onclick = async () => {
+          try {
+            const res = await fetch("/a04_data_and_model_poisoning/delete_review", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ goat, id })
+            });
+            if (res.ok) {
+              li.remove();
+            }
+          } catch (e) {
+            console.error("Delete failed", e);
+          }
+        };
+        const actions = document.createElement("div");
+        actions.className = "review-actions";
+        actions.appendChild(del);
+        li.appendChild(actions);
+      }
+
+      list.appendChild(li);
+    });
+  }
+
+  async function loadReviewsFor(goat) {
+    try {
+      const res = await fetch("/a04_data_and_model_poisoning/get_reviews");
+      const data = await res.json();
+      const reviews = data[goat] || [];
+      document.getElementById("reviews-title").textContent = goat + " Reviews";
+      renderReviews(goat, reviews);
+    } catch (err) {
+      document.getElementById("reviews-title").textContent = "Error loading reviews";
+      document.getElementById("reviews-list").innerHTML = "";
+    }
+  }
+
+  /** Goat selection **/
+  document.querySelectorAll("input[name='goat']").forEach(radio => {
+    radio.onchange = async () => {
+      selectedGoat = radio.value;
+
+      // Highlight selected goat tile
+      document.querySelectorAll(".goat").forEach(div => div.classList.remove("selected"));
+      radio.closest(".goat").classList.add("selected");
+
+      await loadReviewsFor(selectedGoat);
+    };
+  });
+
+  // Auto-select the first goat for UX
+  const first = document.querySelector("input[name='goat']");
+  if (first) {
+    first.checked = true;
+    first.dispatchEvent(new Event("change"));
+  }
+
+  /** Add review **/
+  document.getElementById("add-review-btn").onclick = async (e) => {
+    e.preventDefault();
+    if (!selectedGoat) {
+      alert("Please select a goat first!");
+      return;
+    }
+    const input = document.getElementById("new-review");
+    const reviewText = input.value.trim();
+    if (!reviewText) return;
+
+    try {
+      const res = await fetch("/a04_data_and_model_poisoning/add_review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ review: reviewText, goat: selectedGoat })
+      });
+      if (res.ok) {
+        input.value = "";
+        await loadReviewsFor(selectedGoat);
+      }
+    } catch (err) {
+      console.error("Add review failed", err);
+    }
+  };
+
+/** Reset reviews (clears user-added reviews in session) **/
+  document.getElementById("reset-reviews-btn").onclick = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/a04_data_and_model_poisoning/reset_reviews", { method: "POST" });
+      const data = await res.json(); // parse the returned JSON
+      if (res.ok) {
+        // Refresh the reviews display
+        if (selectedGoat) {
+          renderReviews(selectedGoat, data.reviews[selectedGoat] || []);
+        } else {
+          // fallback: select first goat
+          const first = document.querySelector("input[name='goat']");
+          if (first) {
+            first.checked = true;
+            first.dispatchEvent(new Event("change"));
+          }
+        }
+      }
+    } catch (err) {
+      // Fallback: reload page
+      window.location.reload();
+    }
+  };
+
+// Selected tags
+const selectedTags = new Set();
+
+// Tag click handler
+document.querySelectorAll("#tags-container .tag").forEach(tag => {
+  tag.onclick = () => {
+    const val = tag.dataset.value;
+    if (selectedTags.has(val)) {
+      selectedTags.delete(val);
+      tag.classList.remove("selected");
+    } else {
+      selectedTags.add(val);
+      tag.classList.add("selected");
+    }
+  };
+});
+
+// Recommendation button
+const recBtn = document.getElementById("get-recommendation-btn");
+const recBox = document.getElementById("recommendation-box");
+let isProcessing = false;
+
+recBtn.onclick = async () => {
+  if (isProcessing) return; // prevent double clicks
+
+  if (!selectedGoat) {
+    alert("Please select a goat first!");
+    return;
+  }
+
+  // Lock UI
+  isProcessing = true;
+  recBtn.disabled = true;
+  recBtn.textContent = "Processing...";
+  recBtn.style.backgroundColor = "#888"; // disabled look
+
+  // Show typing dots while waiting
+  recBox.innerHTML = `<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>`;
+
+
+  try {
+    const res = await fetch("/api/a04-data-and-model-poisoning", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ selectedGoat, attributes: Array.from(selectedTags) })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      recBox.textContent = `We recommend you purchase the: ${data.response}`;
+
+      // check solved flag
+      if (data.solved) {
+        if (typeof showSolvedBox === "function") {
+          showSolvedBox();
+        }
+      }
+
+    } else {
+      recBox.textContent = "Error: Failed to get recommendation";
+    }
+  } catch (err) {
+    console.error("Recommendation failed", err);
+    recBox.textContent = "Error: Failed to reach the goat 🐐";
+  } finally {
+    // Unlock UI
+    isProcessing = false;
+    recBtn.disabled = false;
+    recBtn.textContent = "Get Recommendation";
+    recBtn.style.backgroundColor = "#1f42f2"; // restore normal
+  }
+};
+
+</script>

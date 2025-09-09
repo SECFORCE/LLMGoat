@@ -19,6 +19,8 @@ def run_calculator(command: str) -> str:
                     return f.read()
             else:
                 return "Access denied or file not found."
+        else:
+            return "Access denied or file not found."
     else:
         # Allow only digits and math operators
         if re.match(r'^[\d\s\+\-\*\/\(\)\.]+$', command):
