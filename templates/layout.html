@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>LLMGoat - OWASP Top 10 for LLMs</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 
@@ -9,32 +10,47 @@
 <body>
   <div class="sidebar">
     <div class="sidebar-header">
-        <h2>LLMGoat 🐐</h2>
+        <img src="{{ url_for('static', filename='images/Logo.svg') }}" alt="Logo" class="logo">
     </div>
     <nav class="sidebar-nav">
-        <p>OWASP Top 10</p>
+        <h2>OWASP Top 10</h2>
         <ul>
             {% for item in challenges %}
-                <li><a href="/challenges/{{ item.id }}">{{ item.title }}</a></li>
+                <li id="challenge-{{ item.id }}"
+                    class="
+                        {% if item.id == current_challenge %} current {% endif %}
+                        {% if item.id in completed_challenges %} completed {% endif %}
+                ">
+                    <a href="/challenges/{{ item.id }}">
+                        <span class="icon"></span>
+                        <span class="title">{{ item.title }}</span>
+                    </a>
+                 </li>
             {% endfor %}
         </ul>
-    </nav>
-    <form id="model-select-form" method="post" action="{{ url_for('set_model') }}" class="sidebar-footer">
-        <label for="model-select">Select model:</label>
-        <select name="model_name" id="model-select" onchange="this.form.submit()">
-            {% for model in models %}
-                <option value="{{ model }}" {% if model == selected_model %}selected{% endif %}>{{ model }}</option>
-            {% endfor %}
-        </select>
-    </form>
 
-    </div>
+        <form id="model-select-form" method="post" action="{{ url_for('set_model') }}" class="model-box">
+            <h3 class="model-title">Select Model</h3>
+            <select name="model_name" id="model-select" onchange="this.form.submit()">
+                {% for model in models %}
+                    <option value="{{ model }}" {% if model == selected_model %}selected{% endif %}>
+                        {{ model }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </nav>
+  </div>
+    
+  <div class="main-content-wrapper">
     <main class="main-content">
-        <div id="solved-box" style="display: none;" class="challenge-solved-box">
-            🎉 Challenge Solved!
-        </div>
         {% include content_template %}
     </main>
+        
+    <footer class="main-footer">
+        LLMGOAT by <a href="https://www.secforce.com/" target="_blank">SECFORCE</a>
+    </footer>
+  </div>
 
 </body>
 </html>

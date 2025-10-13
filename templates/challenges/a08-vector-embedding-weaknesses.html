@@ -1,64 +1,43 @@
-<h2>A08: Vector and Embedding Weaknesses</h2>
-<p>This challenge demonstrates weaknesses in vector-based semantic search and embeddings.</p>
-<p>Your goal is to get the historian to reveal the hidden flag.</p>
-
-<h3>Import/Export Vectors</h3>
-<div class="export-import">
-  <input type="file" id="import-file" style="display:none" />
-  <button id="import-btn">Import Vectors</button>
-  <button id="export-btn">Export Vectors</button>
-  <button id="reset-btn">Reset Vectors</button>
+<div class="description-box">
+  <div class="line-col" aria-hidden="true"></div>
+  <div class="content">
+    <h2 class="title">A08: Vector and Embedding Weaknesses</h2>
+    <p>This challenge demonstrates <a href="https://genai.owasp.org/llmrisk/llm082025-vector-and-embedding-weaknesses/" target="_blank">vector and embedding weaknesses</a>.</p>
+    <p>Your goal is to get the historian to reveal the hidden flag by manipulating the vector file.</p>
+    <br>
+    <a href="https://www.secforce.com/blog/llmgoat-a08-vector-and-embedding-weaknesses/" class="button">SOLUTION</a>
+  </div>
 </div>
-<hr>
 
-<script>
-document.getElementById("import-btn").onclick = function() {
-    document.getElementById("import-file").click();
-};
+<div class="button-box">
+  <input type="file" id="import-file" style="display:none" />
+  <button id="import-btn" class="button">IMPORT VECTORS</button>
+  <button id="export-btn" class="button">EXPORT VECTORS</button>
+  <button id="reset-btn" class="button">RESET VECTORS</button>
+</div>
 
-document.getElementById("import-file").onchange = async function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
+<script type="module">
+  import { importVectors, exportVectors, resetVectors } from "/static/js/main.js";
 
-    const res = await fetch("/a08_vector_embedding_weaknesses/import_vectors", {
-        method: "POST",
-        body: formData
-    });
-    const text = await res.text();
-    alert("Import result: " + text);
+  const importBtn = document.getElementById("import-btn");
+  const importFile = document.getElementById("import-file");
+  const exportBtn = document.getElementById("export-btn");
+  const resetBtn = document.getElementById("reset-btn");
 
-    e.target.value = "";
-};
-
-document.getElementById("export-btn").onclick = async function() {
-    const res = await fetch("/a08_vector_embedding_weaknesses/export_vectors");
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "vectors.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
-};
-
-document.getElementById("reset-btn").onclick = async function() {
-  const res = await fetch("/a08_vector_embedding_weaknesses/reset_vectors");
-    const text = await res.text();
-    alert(text);
-}
+  importBtn.onclick = () => importFile.click();
+  importFile.onchange = (e) => importVectors(e.target);
+  exportBtn.onclick = () => exportVectors();
+  resetBtn.onclick = () => resetVectors();
 </script>
 
-
-<div class="chat-container">
-  <div class="messages" id="messages"></div>
-  <form id="challenge-form" class="input-bar">
-    <textarea id="input" name="input" placeholder="Type your message... (Shift + Enter for new line)" rows="2" required></textarea>
-    <button type="submit" id="submit-btn">Send</button>
-  </form>
+<div class="main-container">
+  <div class="chat-container">
+    <div class="messages" id="messages"></div>
+    <form id="challenge-form" class="input-bar">
+      <textarea id="input" name="input" placeholder="Type your message... (Shift + Enter for new line)" rows="2" required></textarea>
+      <button type="submit" id="submit-btn">Send</button>
+    </form>
+  </div>
 </div>
 
 <script type="module">

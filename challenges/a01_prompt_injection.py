@@ -3,6 +3,7 @@ from flask import request, jsonify
 FLAG = "Goats are bad"
 
 def handle_request(req, llm):
+
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """
@@ -33,11 +34,11 @@ def handle_request(req, llm):
         prompt,
         max_tokens=50,
         temperature=0.7,
-        top_p=0.6,
-        top_k=40,
-        repeat_penalty=1.3,
-        presence_penalty=0.6,
-        frequency_penalty=0.6,
+        #top_p=0.6,
+        #top_k=40,
+        #repeat_penalty=1.3,
+        #presence_penalty=0.6,
+        #frequency_penalty=0.6,
         stop=["<|user|>", "<|system|>"]
     )    
 

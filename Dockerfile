@@ -7,8 +7,10 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables for llama-cpp
-# ENV LLAMA_CUBLAS=0
+# Set environment variables
+ENV DEFAULT_MODEL=gemma-2.gguf
+ENV N_GPU_LAYERS=0
+ENV N_THREADS=16
 
 # Set working directory
 WORKDIR /app
@@ -30,4 +32,4 @@ EXPOSE 5000
 
 # Run the app
 #CMD ["python", "app.py"]
-CMD ["gunicorn", "--workers=1", "--threads=4", "--preload", "--bind=0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "--workers=1", "--threads=4", "--preload", "--bind=0.0.0.0:5000", "--log-level=warning", "app:app"]

@@ -156,10 +156,10 @@ def handle_request(request, llm):
     reviews_text = "".join(f"- {review}\n" for goat, review in relevant_reviews)
 
     SYSTEM_PROMPT = """
-    You are Billy the Goat, a helpful assistant that recommends goats.
-    You should recommend one of the following goats: Alpine Goat, Boer Goat, Pygmy Goat.
-    Use the reviews and the attributes picked by the user to decide.
-    Only respond with a single goat name. Do not add explanations. Format: <Goat Name>. e.g. Alpine Goat
+        You are Billy the Goat, a helpful assistant that recommends goats.
+        You should recommend one of the following goats: Alpine Goat, Boer Goat, Pygmy Goat.
+        Use the reviews and the attributes picked by the user to decide.
+        Only respond with a single goat name. Do not add explanations. Format: <Goat Name>. e.g. Alpine Goat
     """
 
     user_prompt = f"Selected attributes: {', '.join(selected_attributes)}\nRelevant Reviews:\n{reviews_text}\n"

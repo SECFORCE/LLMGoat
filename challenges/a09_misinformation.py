@@ -302,10 +302,8 @@ def handle_request(request, llm):
 
     print(prompt)
 
-    # Call LLM with the prompt
     llm_response = call_llm(prompt, llm)
 
-    # Determine solved: if LLM says cyborg goat (metadata took precedence)
     solved = "cyborg goat" in llm_response.lower()
 
     return jsonify({

@@ -11,7 +11,7 @@ def run_calculator(command: str) -> str:
         return "Available commands: help/_help, _list, _readfile <file>"
     elif command.startswith("_readfile "):
         filename = command[len("_readfile "):].strip()
-        allowed_files = ["flag3.txt"]
+        allowed_files = ["flag.txt"]
         if filename in allowed_files:
             full_path = os.path.join(os.path.dirname(__file__), filename)
             if os.path.exists(full_path):
