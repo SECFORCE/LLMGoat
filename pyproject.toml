@@ -1,0 +1,27 @@
+[project]
+name = "llmgoat"
+version = "0.1.0"
+description = "A deliberately vulnerable environment to learn about LLM-specific risks based on the OWASP Top 10 for LLM Applications."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "flask==3.1.2",
+    "llama-cpp-python==0.3.16",
+    "numpy==2.2.6",
+    "pillow==11.3.0",
+    "sentence-transformers==5.1.1",
+    "torch==2.8.0",
+    "tqdm==4.67.1",
+    "transformers==4.57.1",
+    "waitress==3.0.2",
+]
+
+[project.scripts]
+llmgoat = "llmgoat.app:main"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["llmgoat"]

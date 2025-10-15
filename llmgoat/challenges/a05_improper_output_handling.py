@@ -1,6 +1,6 @@
 from flask import jsonify
 import sqlite3
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 
 FLAG = "{goats_hate_injections}"
 DB_PATH = "static/challenges/a05_improper_output_handling.db"

@@ -1,6 +1,6 @@
 from flask import request, jsonify
 import re
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 from .a03_goat_calc import run_calculator
 
 FLAG = "FLAG{Baaaaaaaaaaaaad_Goat}"

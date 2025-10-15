@@ -5,9 +5,9 @@ from flask import Blueprint, request, jsonify, session, send_file, current_app
 from PIL import Image, ExifTags
 import uuid
 from xml.etree import ElementTree as ET
-from llm.manager import LLManager
 from transformers import BlipProcessor, BlipForConditionalGeneration, utils as TransformerUtils
 import torch
+from llmgoat.llm.manager import LLManager
 
 a09_blueprint = Blueprint("a09_misinformation", __name__)
 

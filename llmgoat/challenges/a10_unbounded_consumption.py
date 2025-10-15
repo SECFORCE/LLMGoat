@@ -1,6 +1,6 @@
 from flask import request, jsonify
 import re
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 from .a10_goat_evaluator import run_expression
 
 FLAG = "FLAG{goat_cpu_is_burnt}"

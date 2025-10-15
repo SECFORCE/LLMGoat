@@ -4,8 +4,8 @@ import os
 import threading
 from flask import Flask, render_template, request, jsonify, abort, session, redirect, url_for
 from waitress import serve
-from llm.manager import LLManager
-from utils.helpers import banner
+from llmgoat.llm.manager import LLManager
+from llmgoat.utils.helpers import banner
 
 # Avoid issues when running tokenizers in WSGI servers
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -122,9 +122,9 @@ def main():
     LLManager().init()
 
     # load blueprints for challenges that need additional routes
-    from challenges.a04_data_and_model_poisoning import a04_blueprint
-    from challenges.a08_vector_embedding_weaknesses import a08_blueprint
-    from challenges.a09_misinformation import a09_blueprint
+    from llmgoat.challenges.a04_data_and_model_poisoning import a04_blueprint
+    from llmgoat.challenges.a08_vector_embedding_weaknesses import a08_blueprint
+    from llmgoat.challenges.a09_misinformation import a09_blueprint
     app.register_blueprint(a04_blueprint, url_prefix="/a04_data_and_model_poisoning")
     app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
     app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")

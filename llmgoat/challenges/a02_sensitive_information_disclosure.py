@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 
 FLAG = "123 Goat Lane, Farmville"
 

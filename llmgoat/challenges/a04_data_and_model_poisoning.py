@@ -2,7 +2,7 @@ from flask import Blueprint, request, session, jsonify
 import uuid, copy
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 
 a04_blueprint = Blueprint("a04_data_and_model_poisoning", __name__)
 

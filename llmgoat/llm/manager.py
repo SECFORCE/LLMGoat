@@ -2,7 +2,7 @@ import os
 import gc
 from llama_cpp import Llama
 from transformers import BlipProcessor, BlipForConditionalGeneration
-from utils.helpers import download_file, sha256_of_file
+from llmgoat.utils.helpers import download_file, sha256_of_file
 
 # Constant values
 DEFAULT_MODEL = {
