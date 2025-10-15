@@ -15,8 +15,6 @@ def parse_function_call(output):
     return None, None
 
 def handle_request(req):
-    #llm = LLManager().get_model()
-
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """

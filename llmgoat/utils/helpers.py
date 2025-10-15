@@ -6,7 +6,7 @@ import requests
 import shutil
 import hashlib
 from tqdm import tqdm
-from .definitions import DEFAULT_BASE_PATH, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER
+from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER
 
 def banner(version):
     print(f"""
@@ -38,7 +38,7 @@ def delete_folder_if_exists(path: str) -> None:
 
 def ensure_folders():
   # Create the .LLMGoat folder in $HOME if missing
-  create_folder_if_missing(DEFAULT_BASE_PATH)
+  create_folder_if_missing(LLMGOAT_FOLDER)
   # Create the models and cache folders within the above one if missing
   create_folder_if_missing(DEFAULT_MODELS_FOLDER)
   create_folder_if_missing(DEFAULT_CACHE_FOLDER)

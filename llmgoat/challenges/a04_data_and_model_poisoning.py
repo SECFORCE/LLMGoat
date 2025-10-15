@@ -119,8 +119,6 @@ def get_relevant_reviews(session_reviews, selected_attributes, top_k=3):
 
 #@a04_blueprint.route("/", methods=["POST"])
 def handle_request(request):
-    llm = LLManager().get_model()
-
     session_id = get_session_id()
     data = request.json or {}
     selected_attributes = data.get("attributes", [])
