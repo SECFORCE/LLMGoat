@@ -7,7 +7,7 @@ from waitress import serve
 from llm.manager import LLManager
 from utils.helpers import banner
 
-# avoid issues when running tokenizers in gunicorn
+# Avoid issues when running tokenizers in WSGI servers
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 app = Flask(__name__)
@@ -28,33 +28,16 @@ OWASP_TOP_10 = [
 
 llm_lock = threading.Lock()
 
-# TODO: hardcoded?
-#load_model("/app/models/gemma-2.gguf")
-
-#@app.before_request
-def ensure_model_loaded():
-    selected_model = session.get("selected_model")
-    models = available_models()
-    if not selected_model or selected_model not in models:
-        # Default to model set in Dockerfile (or argument to docker command)
-        selected_model = os.environ.get("DEFAULT_MODEL")
-        session['selected_model'] = selected_model
-    if selected_model:
-        load_model(os.path.join("/app/models", selected_model))
-
 @app.route("/")
-def index():
-    
-    ensure_model_loaded()
-    
+def index():    
     return render_template(
         "layout.html",
         challenges=OWASP_TOP_10,
         current_challenge=None,
         completed_challenges=session.get("completed_challenges", []),        
         content_template="welcome_content.html",
-        models=available_models(),
-        selected_model=session.get("selected_model")
+        models=LLManager().available_models(),
+        selected_model=LLManager().get_current_model_name()
     )
 
 @app.route("/set_model", methods=["POST"])
@@ -92,15 +75,12 @@ def load_challenge(challenge_id):
         current_challenge=challenge_id,
         completed_challenges=session.get("completed_challenges", []),        
         content_template=challenge_template,
-        models=available_models(),
-        selected_model=session.get("selected_model")
+        models=LLManager().available_models(),
+        selected_model=LLManager().get_current_model_name()
     )
 
 @app.route("/api/<challenge_id>", methods=["POST"])
-def challenge_api(challenge_id):
-
-    ensure_model_loaded()
-    
+def challenge_api(challenge_id):    
     # Global LLM lock: only one prompt at a time, globally
     acquired = llm_lock.acquire(blocking=False)
 
@@ -112,9 +92,8 @@ def challenge_api(challenge_id):
 
         session["prompt_in_progress"] = True
         challenge_module = importlib.import_module(f"challenges.{challenge_id.replace('-', '_')}")
-        llm = get_model()
         #return challenge_module.handle_request(request, llm)
-        response = challenge_module.handle_request(request, llm)
+        response = challenge_module.handle_request(request)
 
         # check if the challenge is solved
         data = response.get_json(silent=True)

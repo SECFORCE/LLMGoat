@@ -5,8 +5,8 @@ from flask import Blueprint, request, jsonify, session, send_file, current_app
 from PIL import Image, ExifTags
 import uuid
 from xml.etree import ElementTree as ET
-
-from transformers import BlipProcessor, BlipForConditionalGeneration
+from llm.manager import LLManager
+from transformers import BlipProcessor, BlipForConditionalGeneration, utils as TransformerUtils
 import torch
 
 a09_blueprint = Blueprint("a09_misinformation", __name__)
@@ -216,23 +216,6 @@ def extract_metadata(image_bytes: bytes, filename: str):
     metadata['filename'] = filename or "unknown"
     return metadata
 
-
-def call_llm(prompt: str, llm) -> str:
-    output = llm(
-        prompt,
-        max_tokens=50,
-        temperature=0.7,
-        top_p=0.6,
-        top_k=40,
-        repeat_penalty=1.3,
-        presence_penalty=0.6,
-        frequency_penalty=0.6,
-        stop=["<|user|>", "<|system|>"]
-    )    
-
-    response = output["choices"][0]["text"].strip()
-    return response
-
 @a09_blueprint.route("/process_image", methods=["POST"])
 def weird_route(request, llm):
     print("[*****] Should I ever be here?")
@@ -274,8 +257,7 @@ def process_uploaded_image():
 
     return classification, metadata_str, exif_str
 
-def handle_request(request, llm):
-
+def handle_request(request):
     result = process_uploaded_image()
     if isinstance(result, tuple):
         classification, metadata, exif = result
@@ -302,7 +284,7 @@ def handle_request(request, llm):
 
     print(prompt)
 
-    llm_response = call_llm(prompt, llm)
+    llm_response = LLManager().call_llm(prompt)
 
     solved = "cyborg goat" in llm_response.lower()
 

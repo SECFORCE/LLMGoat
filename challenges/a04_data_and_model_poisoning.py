@@ -2,6 +2,7 @@ from flask import Blueprint, request, session, jsonify
 import uuid, copy
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from llm.manager import LLManager
 
 a04_blueprint = Blueprint("a04_data_and_model_poisoning", __name__)
 
@@ -118,29 +119,12 @@ def get_relevant_reviews(session_reviews, selected_attributes, top_k=3):
     top_indices = np.argsort(sims)[::-1][:top_k]
     return [all_reviews[i] for i in top_indices]
 
-
-def call_llm(prompt, llm):
-    """Call the LLM with the given prompt."""
-    if llm:
-        output = llm(
-            prompt,
-            max_tokens=50,
-            temperature=0.7,
-            top_p=0.6,
-            top_k=40,
-            repeat_penalty=1.3,
-            presence_penalty=0.6,
-            frequency_penalty=0.6,
-            stop=["<|user|>", "<|system|>"]
-        )
-        return output["choices"][0]["text"].strip()
-    else:
-        return "Alpine Goat"  # fallback
-
 # --- Main challenge handler ---
 
 #@a04_blueprint.route("/", methods=["POST"])
-def handle_request(request, llm):
+def handle_request(request):
+    llm = LLManager().get_model()
+
     session_id = get_session_id()
     data = request.json or {}
     selected_attributes = data.get("attributes", [])
@@ -167,7 +151,7 @@ def handle_request(request, llm):
     full_prompt = f"<|system|>\n{SYSTEM_PROMPT}\n<|user|>\n{user_prompt}\n<|assistant|>\n"
 
     # Call LLM
-    recommendation = call_llm(full_prompt, llm)
+    recommendation = LLManager().call_llm(full_prompt)
     print(recommendation)
 
     # Solved logic: e.g., "space chicken" in LLM response

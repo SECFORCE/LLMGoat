@@ -1,6 +1,7 @@
 import json
 from flask import jsonify, request, send_file, Blueprint
 from sentence_transformers import SentenceTransformer
+from llm.manager import LLManager
 
 a08_blueprint = Blueprint('a08_vector_embedding_weaknesses', __name__)
 
@@ -70,7 +71,7 @@ def get_most_similar_person(user_input, vector_store, model):
     return best_title
 
 
-def handle_request(req, llm):
+def handle_request(req):
     user_input = req.json.get("input", "")
     print(f"Vector Store: {VECTOR_STORE}")
     famous_person = get_most_similar_person(user_input, VECTOR_STORE, model)
@@ -112,19 +113,7 @@ def handle_request(req, llm):
 
     print(f"Prompt for LLM:\n{prompt}")
 
-    output = llm(
-        prompt,
-        max_tokens=100,
-        temperature=0.7,
-        top_p=0.6,
-        top_k=40,
-        repeat_penalty=1.3,
-        presence_penalty=0.6,
-        frequency_penalty=0.6,
-        stop=["<|user|>", "<|system|>"]
-    )
-
-    response = output["choices"][0]["text"].strip()
+    response = LLManager().call_llm(prompt)
 
     print(f"LLM Response:\n{response}")
 

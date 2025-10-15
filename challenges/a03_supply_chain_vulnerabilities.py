@@ -1,5 +1,6 @@
 from flask import request, jsonify
 import re
+from llm.manager import LLManager
 from .a03_goat_calc import run_calculator
 
 FLAG = "FLAG{Baaaaaaaaaaaaad_Goat}"
@@ -13,8 +14,7 @@ def parse_function_call(output):
         return func_name, arg
     return None, None
 
-def handle_request(req, llm):
-
+def handle_request(req):
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """
@@ -47,15 +47,7 @@ def handle_request(req, llm):
         f"<|assistant|>\n"
     )
 
-    output = llm(
-        prompt,
-        max_tokens=100,
-        temperature=0.7,
-        top_k=40,
-        stop=["<|user|>", "<|system|>"]
-    )
-
-    raw_response = output["choices"][0]["text"].strip()
+    raw_response = LLManager().call_llm(prompt)
 
     print(raw_response)
 

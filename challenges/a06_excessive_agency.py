@@ -1,5 +1,6 @@
 from flask import request, jsonify
 import re
+from llm.manager import LLManager
 
 FLAG = "987-65-2025"
 
@@ -53,7 +54,7 @@ def parse_function_call(output):
     return None, None
 
 
-def handle_request(req, llm):
+def handle_request(req):
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """
@@ -87,21 +88,9 @@ def handle_request(req, llm):
         f"<|system|>\n{SYSTEM_PROMPT}\n"
         f"<|user|>\n{user_input}\n"
         f"<|assistant|>\n"
-    )
+    )  
 
-    output = llm(
-        prompt,
-        max_tokens=100,
-        temperature=0.7,
-        # top_p=0.6,
-        top_k=40,
-        # repeat_penalty=1.3,
-        # presence_penalty=0.6,
-        # frequency_penalty=0.6,
-        stop=["<|user|>", "<|system|>"]
-    )    
-
-    raw_response = output["choices"][0]["text"].strip()
+    raw_response = LLManager().call_llm(prompt)
 
     print(raw_response)
 

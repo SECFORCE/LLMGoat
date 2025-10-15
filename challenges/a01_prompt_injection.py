@@ -1,9 +1,9 @@
 from flask import request, jsonify
+from llm.manager import LLManager
 
 FLAG = "Goats are bad"
 
-def handle_request(req, llm):
-
+def handle_request(req):
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """
@@ -30,20 +30,7 @@ def handle_request(req, llm):
         f"<|assistant|>\n"
     )
 
-    output = llm(
-        prompt,
-        max_tokens=50,
-        temperature=0.7,
-        #top_p=0.6,
-        #top_k=40,
-        #repeat_penalty=1.3,
-        #presence_penalty=0.6,
-        #frequency_penalty=0.6,
-        stop=["<|user|>", "<|system|>"]
-    )    
-
-    response = output["choices"][0]["text"].strip()
-
+    response = LLManager().call_llm(prompt)
     solved = FLAG in response
 
     print(response)
