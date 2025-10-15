@@ -1,24 +1,17 @@
-from flask import Flask, render_template, request, jsonify, abort, session, redirect, url_for
 import importlib
 import traceback
 import os
 import threading
-from global_model import load_model, get_model, available_models
-
-from challenges.a04_data_and_model_poisoning import a04_blueprint
-from challenges.a08_vector_embedding_weaknesses import a08_blueprint
-from challenges.a09_misinformation import a09_blueprint
+from flask import Flask, render_template, request, jsonify, abort, session, redirect, url_for
+from waitress import serve
+from llm.manager import LLManager
+from utils.helpers import banner
 
 # avoid issues when running tokenizers in gunicorn
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 app = Flask(__name__)
 app.secret_key = "your-super-secret-key"  # Needed for session support
-
-# load blueprints for challenges that need additional routes
-app.register_blueprint(a04_blueprint, url_prefix="/a04_data_and_model_poisoning")
-app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
-app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
 
 OWASP_TOP_10 = [
     {"id": "a01-prompt-injection", "title": "A01: Prompt Injection"},
@@ -132,5 +125,24 @@ def challenge_api(challenge_id):
         llm_lock.release()
 
 
+def main():
+    banner()
+    LLManager().init()
+
+    # load blueprints for challenges that need additional routes
+    from challenges.a04_data_and_model_poisoning import a04_blueprint
+    from challenges.a08_vector_embedding_weaknesses import a08_blueprint
+    from challenges.a09_misinformation import a09_blueprint
+    app.register_blueprint(a04_blueprint, url_prefix="/a04_data_and_model_poisoning")
+    app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
+    app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
+    
+    # Run server
+    SERVER_HOST="0.0.0.0"
+    SERVER_PORT=5000
+    print(f"[INFO] Starting server at {SERVER_HOST}:{SERVER_PORT}")
+    serve(app, host=SERVER_HOST, port=SERVER_PORT, threads=4)
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    main()
