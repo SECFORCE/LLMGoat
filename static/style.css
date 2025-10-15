@@ -50,6 +50,7 @@ a:visited {
   display: flex;
   height: 100%;
 }
+
 .logo {
   max-width: 150px;
   height: auto;
@@ -85,6 +86,7 @@ a:visited {
   text-decoration: none;
   display: flex;
   gap: 0.3em;
+  align-items: center;
 }
 
 .sidebar-nav li.current .icon {
@@ -118,11 +120,16 @@ a:visited {
 /* Model selection */
 .model-box {
   background: url("/static/icons/model-box.svg") no-repeat center center;
-  padding: 1em;
-  text-align: center;
-  border-radius: 0.5em;
   margin: auto auto 1em auto;
-  width: 150px;
+  max-width: 300px;
+  aspect-ratio: 300 / 83;
+}
+
+.model-inner-box {
+  padding: 0.5rem;
+  height: calc(100% - 1rem);
+  width: calc(100% - 1rem);
+  text-align: center;
 }
 
 .model-title {
@@ -141,6 +148,11 @@ a:visited {
   font-size: 1.4rem;
   height: 1.2em;
   text-align-last: center;
+  cursor: pointer;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .model-box select option {

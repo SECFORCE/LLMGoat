@@ -31,15 +31,17 @@
             {% endfor %}
         </ul>
 
-        <form id="model-select-form" method="post" action="{{ url_for('set_model') }}" class="model-box">
-            <h3 class="model-title">Select Model</h3>
-            <select name="model_name" id="model-select" onchange="this.form.submit()">
-                {% for model in models %}
-                    <option value="{{ model }}" {% if model == selected_model %}selected{% endif %}>
-                        {{ model }}
-                    </option>
-                {% endfor %}
-            </select>
+        <form id="model-select-form" class="model-box">
+            <div class="model-inner-box">
+                <h3 class="model-title">Select Model</h3>
+                <select name="model_name" id="model-select">
+                    {% for model in models %}
+                        <option value="{{ model }}" {% if model == selected_model %}selected{% endif %}>
+                            {{ model }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
         </form>
     </nav>
   </div>
@@ -53,6 +55,11 @@
         LLMGOAT by <a href="https://www.secforce.com/" target="_blank">SECFORCE</a>
     </footer>
   </div>
+
+  <script type="module">
+    import { initModelSelector } from "/static/js/main.js";
+    initModelSelector();
+    </script>
 
 </body>
 </html>

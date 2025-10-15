@@ -1,7 +1,5 @@
-// static/js/main.js
-
 export function showSolvedBox(challengeId) {
-    // 1️⃣ Update sidebar as before
+    // Update sidebar as before
     if (challengeId) {
         const li = document.getElementById(`challenge-${challengeId}`);
         if (li) {
@@ -9,7 +7,7 @@ export function showSolvedBox(challengeId) {
         }
     }
 
-    // 2️⃣ Create overlay elements
+    // Create overlay elements
     let overlay = document.getElementById("solved-overlay");
     if (!overlay) {
         overlay = document.createElement("div");
@@ -31,9 +29,41 @@ export function showSolvedBox(challengeId) {
         };
     }
 
-    // 3️⃣ Show the overlay
+    // Show the overlay
     overlay.style.display = "flex";
 
+}
+
+export function initModelSelector() {
+  let isProcessing = false;
+  const select = document.getElementById("model-select");
+  select.addEventListener("change", async function(e) {
+    const selectedModel = e.target.value.trim(); // Get the selected value
+    if (isProcessing) return; // Block if processing
+    isProcessing = true;
+    select.disabled = true;
+
+    try {
+      const res = await fetch("/set_model", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model_name: selectedModel }),
+      });
+
+      if (res.status === 429) {
+        await res.json();
+        isProcessing = true;
+        select.disabled = true;
+        return;
+      }
+    } catch {
+        isProcessing = true;
+        select.disabled = true;
+    } finally {
+      select.disabled = false;
+      isProcessing = false;
+    }
+  })
 }
 
 /* chatbot - common to most challenges */

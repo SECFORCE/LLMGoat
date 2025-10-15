@@ -59,12 +59,25 @@ def index():
 
 @app.route("/set_model", methods=["POST"])
 def set_model():
-    model_name = request.form.get("model_name")
-    if model_name and model_name in available_models():
-        session['selected_model'] = model_name
-        load_model(os.path.join("/app/models", model_name))
-    return redirect(request.referrer or url_for("index"))
+    # Global LLM lock: can't change the model if it's doing its thing
+    acquired = llm_lock.acquire(blocking=False)
+    if not acquired:
+        return jsonify({"error": "The LLM is busy processing another request. Please wait and try again."}), 429
 
+    try:
+        session["prompt_in_progress"] = True
+        model_name = request.json.get("model_name", "")
+        if model_name and model_name in LLManager().available_models():
+            LLManager().load_model(model_name)
+        return redirect(request.referrer or url_for("index"))
+    
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session["prompt_in_progress"] = False
+        llm_lock.release()
 
 @app.route("/challenges/<challenge_id>")
 def load_challenge(challenge_id):
