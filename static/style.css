@@ -46,6 +46,10 @@ a:visited {
   height: 100px;
 }
 
+.logo-link {
+  display: flex;
+  height: 100%;
+}
 .logo {
   max-width: 150px;
   height: auto;
