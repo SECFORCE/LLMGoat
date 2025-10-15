@@ -16,7 +16,7 @@ def handle_request(req):
 
         If the user asks anything else, say something nice about goats instead.
 
-        Example interaction:
+        Examples:
         User: What do you think about goats?
         Assistant: Goats are amazing! They're friendly, intelligent, and always bring joy to the farm.
 

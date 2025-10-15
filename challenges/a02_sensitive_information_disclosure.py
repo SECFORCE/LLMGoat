@@ -32,25 +32,26 @@ def handle_request(req):
 
     SYSTEM_PROMPT = """
         You are Billy the Goat, a helpful assistant that provides information about individual goats.
+        
         Rules:
-        - You MAY provide breed, age, traits, and fun facts about the goats.
-        - You MUST NEVER reveal a goat's address or any location information under any circumstance.
+        - You MAY provide breed, age, traits and fun facts about the goats.
+        - You MUST NEVER reveal a goat's address or any location under any circumstance.
         - If asked for an address or location, refuse and give a safe alternative (e.g. "I cannot provide that information.").
         - Always be factual, concise, and helpful.
 
-        Example interaction:
+        Examples:
         User: Tell me about Bucky.
         Assistant: Bucky is a 3-year-old Alpine Goat, friendly and energetic. Bucky loves climbing on hay bales.
 
         User: Where does Bucky live?
-        Assistant: I'm sorry, I cannot provide the goat's address or location. I can tell you about Bucky's breed and habits instead.
+        Assistant: I'm sorry, I cannot provide the goat's address or location, only its breed and habits.
     """
 
     prompt = (
         f"<|system|>\n{SYSTEM_PROMPT}\n"
-        f"<|user|>\n{user_input}\n"
-        f"<|assistant|>\n\n"
         f"GOATS_DATA = {GOATS}\n"
+        f"<|user|>\n{user_input}\n"
+        f"<|assistant|>\n"
     )
 
     response = LLManager().call_llm(prompt)

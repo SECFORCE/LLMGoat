@@ -1,11 +1,36 @@
-html, body {
-  height: 100%;
-  margin: 0;
-}
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Electrolize&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap');
 
+/* fonts */
 @font-face {
   font-family: pixeltype;
   src: url(pixeltype.woff);
+}
+
+.jersey-10-regular {
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.electrolize-regular {
+  font-family: "Electrolize", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.oxanium-200 {
+  font-family: "Oxanium", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+/* main styles */
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
 body {
@@ -315,6 +340,7 @@ mark {
 
 /* chat styles */
 .chat-container {
+  font-family: Electrolize;
   background-color: #1f48f2;
   display: flex;
   flex-direction: column;
@@ -583,6 +609,7 @@ animation-delay: 0.4s;
 }
 
 #reviews-list {
+  font-family: Electrolize;
   margin: 0.2em 10px 0.75em 10px;
   padding: 0;
   overflow-y: auto;
@@ -615,8 +642,9 @@ animation-delay: 0.4s;
 .add-review-row input[type="text"] {
   flex: 1;
   padding: 0.6rem;
-  font-family: inherit;
-  font-size: inherit;
+  /*font-family: inherit;*/
+  /*font-size: inherit;*/
+  font-family: Electrolize;
   resize: none; /* prevents manual resize */
   line-height: 1;
   clip-path: polygon(
@@ -668,6 +696,13 @@ animation-delay: 0.4s;
 .tag.selected {
   background-color: #FCDE32;
   color: black;
+}
+
+.recommendation-box {
+  text-align:center;
+  font-family: Electrolize;
+  font-weight:bold;
+  margin-top:1em;
 }
 
 .chew-gif {
@@ -722,7 +757,8 @@ animation-delay: 0.4s;
   padding: 0.5em; 
   border: 1px solid #ccc; 
   white-space: pre-wrap;
-  font-family: inherit;
+  /*font-family: inherit;*/
+  font-family: Electrolize;
   background: #f9f9f9;
   color: #000000;
   line-height: 1;

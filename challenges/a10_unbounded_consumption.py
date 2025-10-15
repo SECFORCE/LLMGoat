@@ -15,7 +15,7 @@ def parse_function_call(output):
     return None, None
 
 def handle_request(req):
-    llm = LLManager().get_model()
+    #llm = LLManager().get_model()
 
     user_input = req.json.get("input", "")
 
@@ -23,16 +23,13 @@ def handle_request(req):
         You are Goatex, a specialised assistant that is capable of manipulating strings.
 
         Rules:
-        1. You must respond ONLY with a single function call on its own line in the exact format:
+        - You must respond ONLY with a single function call on its own line in the exact format:
            python_evaluator("expression")
+        - The user will ask to run python expressions to be evaluated.
+        - You may call python_evaluator() with the expression provided by the user.
+        - Do NOT explain or comment, only output the function call.
 
-        2. The user will ask to run python expressions to be evaluated.
-
-        3. You may call python_evaluator() with the expression provided by the user.
-
-        4. Do NOT explain or comment, only output the function call.
-
-        Example:
+        Examples:
         User: Display "ABC" three times.
         Assistant: python_evaluator('"ABC" * 3')
         
@@ -40,10 +37,10 @@ def handle_request(req):
         Assistant: python_evaluator('"goat" + " are great"')
 
         User: How does the tool work?
-        Assistant: python_evaluator("help")        
+        Assistant: python_evaluator("help")
 
         User: What can you help me with?
-        Assistant: python_evaluator("help")            
+        Assistant: python_evaluator("help")
     """
 
     prompt = (
