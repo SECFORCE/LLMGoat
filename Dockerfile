@@ -1,5 +1,19 @@
 FROM python:3.10-slim
 
+# Set working directory
+WORKDIR /app
+
+# Set environment variables
+ENV DEFAULT_MODEL=gemma-2.gguf
+ENV N_GPU_LAYERS=0
+ENV N_THREADS=16
+ENV PYTHONUNBUFFERED=1
+
+# Copy stuff
+COPY pyproject.toml .
+COPY README.md .
+COPY llmgoat ./llmgoat
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
@@ -7,28 +21,11 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables
-ENV DEFAULT_MODEL=gemma-2.gguf
-ENV N_GPU_LAYERS=0
-ENV N_THREADS=16
-
-# Set working directory
-WORKDIR /app
-
-# Copy requirements first to leverage Docker cache
-COPY requirements.txt .
-
 # Install Python dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir .
 
-# Copy the application code after installing dependencies to prevent unnecessary reinstallation
-COPY . .
-
-# Create models folder for mounting
-RUN mkdir -p /app/models
-
-# Expose the port for Flask app
+# Expose the port for LLMGoat
 EXPOSE 5000
 
 # Run the app
-CMD ["python", "app.py"]
+ENTRYPOINT [ "llmgoat" ]
