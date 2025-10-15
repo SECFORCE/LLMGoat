@@ -1,18 +1,48 @@
+"""
+This module contains multiple helper function used throughout the codebase.
+"""
 import os
 import requests
+import shutil
 import hashlib
 from tqdm import tqdm
+from .definitions import DEFAULT_BASE_PATH, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER
 
-def banner():
-    print("""
+def banner(version):
+    print(f"""
       ░█░░░█░░░█▄█
       ░█░░░█░░░█░█
       ░▀▀▀░▀▀▀░▀░▀
     ░█▀▀░█▀█░█▀█░▀█▀
     ░█░█░█░█░█▀█░░█░
     ░▀▀▀░▀▀▀░▀░▀░░▀░
+    LLMGoat v{version}
 
 """)
+
+def file_exists(filepath: str) -> bool:
+  """Check if a file exists at the given filepath and return a boolean."""
+  return os.path.exists(filepath)
+
+def create_folder_if_missing(path: str) -> None:
+  """Utility function to create a folder if missing"""
+
+  if not os.path.isdir(path):
+    os.makedirs(path)
+
+def delete_folder_if_exists(path: str) -> None:
+  """Utility function to delete a folder if exists"""
+
+  if os.path.isdir(path):
+    shutil.rmtree(path)
+
+def ensure_folders():
+  # Create the .LLMGoat folder in $HOME if missing
+  create_folder_if_missing(DEFAULT_BASE_PATH)
+  # Create the models and cache folders within the above one if missing
+  create_folder_if_missing(DEFAULT_MODELS_FOLDER)
+  create_folder_if_missing(DEFAULT_CACHE_FOLDER)
+
 
 def sha256_of_file(filepath):
     """Calculate the SHA-256 hash of a file."""
