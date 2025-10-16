@@ -53,6 +53,7 @@ class LLManager:
             self.load_model(selected_model)
         # If available load the default model
         elif DEFAULT_MODEL["name"] in available_models:
+            print(f"[ERROR] Selected model was missing or not available")
             print(f"[INFO] Default model is available")
             # TODO: check that the hash matches
             print(f"[INFO] Model is correct, loading it...")

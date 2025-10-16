@@ -44,6 +44,12 @@ def ensure_folders():
   create_folder_if_missing(DEFAULT_CACHE_FOLDER)
 
 
+def set_env_if_empty(env_var, env_value):
+  """Set an ENV variable if empty, otherwise don't change it (ENV vars take precedence!)"""
+
+  os.environ[env_var] = os.environ.get(env_var, env_value)
+   
+
 def sha256_of_file(filepath):
     """Calculate the SHA-256 hash of a file."""
     sha256_hash = hashlib.sha256()
