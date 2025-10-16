@@ -4,11 +4,10 @@ import os
 import threading
 from flask import Flask, render_template, request, jsonify, abort, session, redirect, url_for
 from waitress import serve
-from llm.manager import LLManager
-from utils.helpers import banner
-
-# Avoid issues when running tokenizers in WSGI servers
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
+from llmgoat import __version__
+from llmgoat.llm.manager import LLManager
+from llmgoat.utils.helpers import banner, ensure_folders
+from llmgoat.utils.definitions import MAIN_DIR
 
 app = Flask(__name__)
 app.secret_key = "your-super-secret-key"  # Needed for session support
@@ -66,7 +65,7 @@ def set_model():
 def load_challenge(challenge_id):
     challenge_template = f"challenges/{challenge_id}.html"
 
-    if not os.path.exists(os.path.join("templates", challenge_template)):
+    if not os.path.exists(os.path.join(MAIN_DIR, "templates", challenge_template)):
         abort(404)
 
     return render_template(
@@ -91,7 +90,7 @@ def challenge_api(challenge_id):
             return jsonify({"error": "Another prompt is still processing for your session. Please wait before submitting again."}), 429
 
         session["prompt_in_progress"] = True
-        challenge_module = importlib.import_module(f"challenges.{challenge_id.replace('-', '_')}")
+        challenge_module = importlib.import_module(f"llmgoat.challenges.{challenge_id.replace('-', '_')}")
         #return challenge_module.handle_request(request, llm)
         response = challenge_module.handle_request(request)
 
@@ -118,13 +117,16 @@ def challenge_api(challenge_id):
 
 
 def main():
-    banner()
+    banner(__version__)
+    ensure_folders()
+
+    # Init the Singleton
     LLManager().init()
 
     # load blueprints for challenges that need additional routes
-    from challenges.a04_data_and_model_poisoning import a04_blueprint
-    from challenges.a08_vector_embedding_weaknesses import a08_blueprint
-    from challenges.a09_misinformation import a09_blueprint
+    from llmgoat.challenges.a04_data_and_model_poisoning import a04_blueprint
+    from llmgoat.challenges.a08_vector_embedding_weaknesses import a08_blueprint
+    from llmgoat.challenges.a09_misinformation import a09_blueprint
     app.register_blueprint(a04_blueprint, url_prefix="/a04_data_and_model_poisoning")
     app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
     app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
@@ -134,7 +136,6 @@ def main():
     SERVER_PORT=5000
     print(f"[INFO] Starting server at {SERVER_HOST}:{SERVER_PORT}")
     serve(app, host=SERVER_HOST, port=SERVER_PORT, threads=4)
-
 
 if __name__ == "__main__":
     main()

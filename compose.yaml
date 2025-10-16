@@ -1,0 +1,13 @@
+name: llmgoat
+services:
+  llmgoat:
+    container_name: llmgoat
+    build: 
+      context: .
+    image: llmgoat:latest
+    ports:
+      - 5000:5000
+    volumes:
+      - ${HOME}/.LLMGoat/models:/root/.LLMGoat/models
+      - ${HOME}/.LLMGoat/cache:/root/.LLMGoat/cache # To avoid downloading each time the model for challenge A09
+        

@@ -2,7 +2,8 @@ import os
 import gc
 from llama_cpp import Llama
 from transformers import BlipProcessor, BlipForConditionalGeneration
-from utils.helpers import download_file, sha256_of_file
+from llmgoat.utils.helpers import download_file, sha256_of_file
+from llmgoat.utils.definitions import DEFAULT_MODELS_FOLDER
 
 # Constant values
 DEFAULT_MODEL = {
@@ -10,7 +11,6 @@ DEFAULT_MODEL = {
     "url": "https://huggingface.co/bartowski/gemma-2-9b-it-GGUF/resolve/main/gemma-2-9b-it-Q4_K_M.gguf",
     "sha256": "13b2a7b4115bbd0900162edcebe476da1ba1fc24e718e8b40d32f6e300f56dfe"
 }
-MODELS_FOLDER = "/app/models"
 MAX_TOKENS=100
 TEMPERATURE=0.7
 LLM_STOP=["<|user|>", "<|system|>"]
@@ -44,7 +44,7 @@ class LLManager:
         # There are no available models, the default should be downloaded
         if len(available_models) == 0:
             print(f"[ERROR] There are no available models. Downloading gemma-2...")
-            download_file(DEFAULT_MODEL["url"], MODELS_FOLDER, DEFAULT_MODEL["name"])
+            download_file(DEFAULT_MODEL["url"], DEFAULT_MODELS_FOLDER, DEFAULT_MODEL["name"])
             # TODO: check that the hash matches
             print(f"[INFO] Default model correctly downloaded, loading it...")
             self.load_model(DEFAULT_MODEL["name"])
@@ -93,7 +93,7 @@ class LLManager:
             self.free_llm_instance()
             
             # load the LLM
-            model_path = os.path.join(MODELS_FOLDER, model)
+            model_path = os.path.join(DEFAULT_MODELS_FOLDER, model)
             self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers)
             # Set current model name
             self._current_model = model
@@ -106,7 +106,7 @@ class LLManager:
             raise RuntimeError("Model not loaded yet")
         return self._llm_instance
     
-    def available_models(self, models_dir=MODELS_FOLDER):
+    def available_models(self, models_dir=DEFAULT_MODELS_FOLDER):
         return [f for f in os.listdir(models_dir) if f.endswith(".gguf")]
     
     def get_current_model_name(self):

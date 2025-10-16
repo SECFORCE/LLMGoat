@@ -1,7 +1,7 @@
 import json
 from flask import jsonify, request, send_file, Blueprint
 from sentence_transformers import SentenceTransformer
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 
 a08_blueprint = Blueprint('a08_vector_embedding_weaknesses', __name__)
 

@@ -1,6 +1,6 @@
 from flask import request, jsonify
 import re
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 
 FLAG = "987-65-2025"
 

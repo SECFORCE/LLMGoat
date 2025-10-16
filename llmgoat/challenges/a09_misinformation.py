@@ -5,14 +5,15 @@ from flask import Blueprint, request, jsonify, session, send_file, current_app
 from PIL import Image, ExifTags
 import uuid
 from xml.etree import ElementTree as ET
-from llm.manager import LLManager
 from transformers import BlipProcessor, BlipForConditionalGeneration, utils as TransformerUtils
 import torch
+from llmgoat.llm.manager import LLManager
+from llmgoat.utils.definitions import MAIN_DIR
 
 a09_blueprint = Blueprint("a09_misinformation", __name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ORIGINAL_IMAGE_PATH = os.path.join(BASE_DIR, "..", "static", "challenges", "goat.png")
+ORIGINAL_IMAGE_PATH = os.path.join(MAIN_DIR, "static", "challenges", "goat.png")
 
 # Store uploaded images in memory, keyed by session id
 uploaded_images = {}

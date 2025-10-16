@@ -1,6 +1,6 @@
 from flask import request, jsonify
 import re
-from llm.manager import LLManager
+from llmgoat.llm.manager import LLManager
 from .a10_goat_evaluator import run_expression
 
 FLAG = "FLAG{goat_cpu_is_burnt}"
@@ -15,8 +15,6 @@ def parse_function_call(output):
     return None, None
 
 def handle_request(req):
-    #llm = LLManager().get_model()
-
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """
