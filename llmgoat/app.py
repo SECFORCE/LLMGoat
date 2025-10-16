@@ -10,6 +10,7 @@ from waitress import serve
 from llmgoat import __title__, __version__, __description__
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils import definitions
+from llmgoat.utils.logger import goatlog
 from llmgoat.utils.helpers import banner, ensure_folders, set_env_if_empty
 
 app = Flask(__name__)
@@ -181,7 +182,7 @@ def main():
     # Run server
     SERVER_HOST=os.environ.get(definitions.LLMGOAT_SERVER_HOST)
     SERVER_PORT=os.environ.get(definitions.LLMGOAT_SERVER_PORT)
-    print(f"[INFO] Starting server at '{SERVER_HOST}:{SERVER_PORT}'")
+    goatlog.info(f"Starting server at '{SERVER_HOST}:{SERVER_PORT}'")
     serve(app, host=SERVER_HOST, port=SERVER_PORT, threads=4)
 
 if __name__ == "__main__":

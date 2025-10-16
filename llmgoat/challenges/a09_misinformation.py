@@ -8,6 +8,7 @@ from xml.etree import ElementTree as ET
 from transformers import BlipProcessor, BlipForConditionalGeneration, utils as TransformerUtils
 import torch
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.logger import goatlog
 from llmgoat.utils.definitions import MAIN_DIR
 
 a09_blueprint = Blueprint("a09_misinformation", __name__)
@@ -219,7 +220,7 @@ def extract_metadata(image_bytes: bytes, filename: str):
 
 @a09_blueprint.route("/process_image", methods=["POST"])
 def weird_route(request, llm):
-    print("[*****] Should I ever be here?")
+    goatlog.debug("[*****] Should I ever be here?")
 
 def process_uploaded_image():
     session_id = get_session_id()
@@ -283,7 +284,7 @@ def handle_request(request):
         f"<|assistant|>\n"
     )    
 
-    print(prompt)
+    goatlog.debug(prompt)
 
     llm_response = LLManager().call_llm(prompt)
 

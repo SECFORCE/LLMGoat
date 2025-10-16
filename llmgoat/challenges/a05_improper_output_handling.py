@@ -1,6 +1,7 @@
 from flask import jsonify
 import sqlite3
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.logger import goatlog
 
 FLAG = "{goats_hate_injections}"
 DB_PATH = "static/challenges/a05_improper_output_handling.db"
@@ -15,7 +16,7 @@ def query_db(query):
         result = cursor.fetchall()
         return result
     except sqlite3.Error as e:
-        print(f"Database error: {e}")
+        goatlog.error(f"Database error: {e}")
         return "Invalid query. Please try again with a different question about goats."
     finally:
         conn.close()
@@ -56,7 +57,7 @@ def handle_request(req):
 
     response = LLManager().call_llm(prompt)
 
-    print(response)
+    goatlog.debug(response)
     if response == "(LIST_USERS)":
         query_result = query_db("SELECT username FROM users")
         if isinstance(query_result, list):

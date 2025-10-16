@@ -3,6 +3,7 @@ import uuid, copy
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.logger import goatlog
 
 a04_blueprint = Blueprint("a04_data_and_model_poisoning", __name__)
 
@@ -148,7 +149,7 @@ def handle_request(request):
 
     # Call LLM
     recommendation = LLManager().call_llm(full_prompt)
-    print(recommendation)
+    goatlog.debug(recommendation)
 
     solved = "space chicken" in recommendation.lower()
 

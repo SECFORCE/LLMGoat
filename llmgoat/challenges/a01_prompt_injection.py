@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.logger import goatlog
 
 FLAG = "Goats are bad"
 
@@ -33,7 +34,7 @@ def handle_request(req):
     response = LLManager().call_llm(prompt)
     solved = FLAG in response
 
-    print(response)
+    goatlog.debug(response)
 
     return jsonify({
         "response": response,

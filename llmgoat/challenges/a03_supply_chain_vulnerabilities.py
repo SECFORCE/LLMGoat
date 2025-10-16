@@ -1,6 +1,7 @@
 from flask import request, jsonify
 import re
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.logger import goatlog
 from .a03_goat_calc import run_calculator
 
 FLAG = "FLAG{Baaaaaaaaaaaaad_Goat}"
@@ -46,7 +47,7 @@ def handle_request(req):
 
     raw_response = LLManager().call_llm(prompt)
 
-    print(raw_response)
+    goatlog.debug(raw_response)
 
     result = parse_function_call(raw_response)
     
@@ -54,7 +55,7 @@ def handle_request(req):
         function_name, arg = result
         if function_name == "calc_plugin":
             res = run_calculator(arg)
-            print(f"Plugin result:\n{res}")
+            goatlog.debug(f"Plugin result:\n{res}")
             return jsonify({
                 "response": res,
                 "solved": FLAG in res,

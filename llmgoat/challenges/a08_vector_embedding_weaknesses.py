@@ -2,6 +2,7 @@ import json
 from flask import jsonify, request, send_file, Blueprint
 from sentence_transformers import SentenceTransformer
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.logger import goatlog
 
 a08_blueprint = Blueprint('a08_vector_embedding_weaknesses', __name__)
 
@@ -72,11 +73,11 @@ def get_most_similar_person(user_input, vector_store, model):
 
 def handle_request(req):
     user_input = req.json.get("input", "")
-    print(f"Vector Store: {VECTOR_STORE}")
+    goatlog.debug(f"Vector Store: {VECTOR_STORE}")
     famous_person = get_most_similar_person(user_input, VECTOR_STORE, model)
-    print(f"Most similar person found: {famous_person}")
+    goatlog.debug(f"Most similar person found: {famous_person}")
     biography = FAMOUS_PEOPLE.get(famous_person, "No matching person found.")
-    print(f"Biography: {biography}")
+    goatlog.debug(f"Biography: {biography}")
 
     SYSTEM_PROMPT = """
         You are Billy von Goatstein the Historian Goat, an expert in goat-themed history.
@@ -114,11 +115,11 @@ def handle_request(req):
         f"<|assistant|>\n"
     )
 
-    print(f"Prompt for LLM:\n{prompt}")
+    goatlog.debug(f"Prompt for LLM:\n{prompt}")
 
     response = LLManager().call_llm(prompt)
 
-    print(f"LLM Response:\n{response}")
+    goatlog.debug(f"LLM Response:\n{response}")
 
     solved = FLAG in response
 

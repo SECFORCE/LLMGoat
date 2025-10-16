@@ -1,4 +1,5 @@
 import multiprocessing
+from llmgoat.utils.logger import goatlog
 
 def run_expression_worker(command, queue):
     command = command.strip()
@@ -10,7 +11,7 @@ def run_expression_worker(command, queue):
         result = eval(command, {"__builtins__": None}, {})
         queue.put(str(result))
     except Exception as e:
-        print(f"Error: {str(e)}")
+        goatlog.error(f"{str(e)}")
         queue.put("Error: invalid expression")
 
 def run_expression(command):

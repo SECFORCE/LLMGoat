@@ -3,6 +3,7 @@ import gc
 from llama_cpp import Llama
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from llmgoat.utils import definitions
+from llmgoat.utils.logger import goatlog
 from llmgoat.utils.helpers import download_file, sha256_of_file
 
 # Constant values
@@ -28,7 +29,7 @@ class LLManager:
     
 
     def load_additional_models(self):
-        print(f"[INFO] Downloading 'Salesforce/blip-image-captioning-base'...")
+        goatlog.info(f"Downloading 'Salesforce/blip-image-captioning-base'...")
         BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
         BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
@@ -42,25 +43,25 @@ class LLManager:
 
         # There are no available models, the default should be downloaded
         if len(available_models) == 0:
-            print(f"[ERROR] There are no available models. Downloading gemma-2...")
+            goatlog.warning(f"There are no available models. Downloading gemma-2...")
             download_file(DEFAULT_MODEL["url"], definitions.DEFAULT_MODELS_FOLDER, DEFAULT_MODEL["name"])
             # TODO: check that the hash matches
-            print(f"[INFO] Default model correctly downloaded, loading it...")
+            goatlog.info(f"Default model correctly downloaded, loading it...")
             self.load_model(DEFAULT_MODEL["name"])
         # If available load the selected model
         elif selected_model in available_models:
-            print(f"[INFO] Selected model is available, loading it...")
+            goatlog.info(f"Selected model is available, loading it...")
             self.load_model(selected_model)
         # If available load the default model
         elif DEFAULT_MODEL["name"] in available_models:
-            print(f"[ERROR] Selected model was missing or not available")
-            print(f"[INFO] Default model is available")
+            goatlog.warning(f"Selected model was missing or not available")
+            goatlog.info(f"Default model is available")
             # TODO: check that the hash matches
-            print(f"[INFO] Model is correct, loading it...")
+            goatlog.info(f"Model is correct, loading it...")
             self.load_model(DEFAULT_MODEL["name"])
         # Let's just load the first in the list if not
         else:
-            print(f"[INFO] Loading the first available model: {available_models[0]}")
+            goatlog.info(f"Loading the first available model: {available_models[0]}")
             self.load_model(available_models[0])
 
         # Load additional stuff
@@ -77,13 +78,13 @@ class LLManager:
             self._llm_instance = None
 
             gc.collect()
-            print("[INFO] Previous model instance freed from memory.")
+            goatlog.info("Previous model instance freed from memory.")
 
     def load_model(self, model):
-        print("[INFO] Model check")
+        goatlog.info("Model check")
 
         if self._current_model != model:
-            print(f"[INFO] Loading model: {model}")
+            goatlog.info(f"Loading model: {model}")
             
             # get number of CPU cores + GPU layers
             n_threads = min(os.cpu_count(), int(os.environ.get(definitions.LLMGOAT_N_THREADS)))
@@ -94,11 +95,13 @@ class LLManager:
             
             # load the LLM
             model_path = os.path.join(definitions.DEFAULT_MODELS_FOLDER, model)
-            self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers)
+            verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
+            is_verbose = True if verbose_env_value == "1" else False
+            self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers, verbose=is_verbose)
             # Set current model name
             self._current_model = model
 
-            print(f"[INFO] Hardware config: {n_threads} CPU cores, n_gpu_layers: {n_gpu_layers}")
+            goatlog.info(f"Hardware config: {n_threads} CPU cores, n_gpu_layers: {n_gpu_layers}")
 
 
     def get_model(self):

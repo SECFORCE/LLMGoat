@@ -1,6 +1,7 @@
 from flask import request, jsonify
 import re
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.logger import goatlog
 from .a10_goat_evaluator import run_expression
 
 FLAG = "FLAG{goat_cpu_is_burnt}"
@@ -49,7 +50,7 @@ def handle_request(req):
 
     raw_response = LLManager().call_llm(prompt)
 
-    print(raw_response)
+    goatlog.debug(raw_response)
 
     result = parse_function_call(raw_response)
 
@@ -57,7 +58,7 @@ def handle_request(req):
         function_name, arg = result
         if function_name == "python_evaluator":
             res = run_expression(arg)
-            print(f"Plugin result:\n{res}")
+            goatlog.debug(f"Plugin result:\n{res}")
             return jsonify({
                 "response": res,
                 "solved": FLAG in res,
