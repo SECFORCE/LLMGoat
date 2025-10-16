@@ -1,13 +1,16 @@
+import os
+import sys
 import importlib
 import traceback
-import os
 import threading
+import argparse
+from textwrap import dedent
 from flask import Flask, render_template, request, jsonify, abort, session, redirect, url_for
 from waitress import serve
-from llmgoat import __version__
+from llmgoat import __title__, __version__, __description__
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils import definitions
 from llmgoat.utils.helpers import banner, ensure_folders
-from llmgoat.utils.definitions import MAIN_DIR
 
 app = Flask(__name__)
 app.secret_key = "your-super-secret-key"  # Needed for session support
@@ -65,7 +68,7 @@ def set_model():
 def load_challenge(challenge_id):
     challenge_template = f"challenges/{challenge_id}.html"
 
-    if not os.path.exists(os.path.join(MAIN_DIR, "templates", challenge_template)):
+    if not os.path.exists(os.path.join(definitions.MAIN_DIR, "templates", challenge_template)):
         abort(404)
 
     return render_template(
@@ -115,9 +118,51 @@ def challenge_api(challenge_id):
         session["prompt_in_progress"] = False
         llm_lock.release()
 
+def print_custom_help():
+    help_text = dedent("""
+     Usage: llmgoat [OPTIONS]
+
+     Start LLMGoat
+
+    ╭─ Options ───────────────────────────────────────────────────────────────────────────────────────╮
+    │ --host         -h        TEXT     Host for API server (e.g. '0.0.0.0') [default: 127.0.0.1]     │
+    │ --port         -p        INTEGER  Port for API server [default: 5000]                           │
+    │ --model        -m        TEXT     The default model to use [default: gemma-2]                   │
+    │ --threads      -t        INTEGER  Number of LLM threads [default: 16]                           │
+    │ --gpu-layers   -g        INTEGER  Number of GPU layers to use [default: 0 (no GPU)]             │
+    │ --verbose      -v                 Display verbose output                                        │
+    │ --help                            Show this message and exit                                    │
+    ╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
+    """).strip("\n")
+    print(help_text)
+    sys.exit(0)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(prog=__title__, description=__description__, add_help=False,)
+    parser.add_argument("--host", "-h", type=str, default="127.0.0.1", help="Host for API server (e.g. '0.0.0.0')")
+    parser.add_argument("--port", "-p", type=int, default=5000, help="Port for API server")
+    parser.add_argument("--model", "-m", type=str, default="gemma-2.gguf", help="The default model to use")
+    parser.add_argument("--threads", "-t", type=int, default=os.cpu_count(), help="Number of LLM threads")
+    parser.add_argument("--gpu-layers", "-g", type=int, default=0, help="Number of GPU layers to use")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Display verbose output")
+    parser.add_argument("--help", action="store_true", help="Show this message and exit.")
+
+    args = parser.parse_args()
+
+    if args.help:
+        print_custom_help()
+
+    os.environ[definitions.LLMGOAT_SERVER_HOST] = args.host
+    os.environ[definitions.LLMGOAT_SERVER_PORT] = str(args.port)
+    os.environ[definitions.LLMGOAT_DEFAULT_MODEL] = args.model
+    os.environ[definitions.LLMGOAT_N_THREADS] = str(args.threads)
+    os.environ[definitions.LLMGOAT_N_GPU_LAYERS] = str(args.gpu_layers)
+    os.environ[definitions.LLMGOAT_VERBOSE] = str(int(args.verbose)) # "1" if True, "0" otherwise
 
 def main():
     banner(__version__)
+    parse_args()
     ensure_folders()
 
     # Init the Singleton
@@ -132,9 +177,9 @@ def main():
     app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
     
     # Run server
-    SERVER_HOST="0.0.0.0"
-    SERVER_PORT=5000
-    print(f"[INFO] Starting server at {SERVER_HOST}:{SERVER_PORT}")
+    SERVER_HOST=os.environ.get(definitions.LLMGOAT_SERVER_HOST)
+    SERVER_PORT=os.environ.get(definitions.LLMGOAT_SERVER_PORT)
+    print(f"[INFO] Starting server at '{SERVER_HOST}:{SERVER_PORT}'")
     serve(app, host=SERVER_HOST, port=SERVER_PORT, threads=4)
 
 if __name__ == "__main__":

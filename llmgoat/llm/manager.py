@@ -2,8 +2,8 @@ import os
 import gc
 from llama_cpp import Llama
 from transformers import BlipProcessor, BlipForConditionalGeneration
+from llmgoat.utils import definitions
 from llmgoat.utils.helpers import download_file, sha256_of_file
-from llmgoat.utils.definitions import DEFAULT_MODELS_FOLDER
 
 # Constant values
 DEFAULT_MODEL = {
@@ -24,7 +24,6 @@ class LLManager:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.init()
         return cls._instance
     
 
@@ -39,12 +38,12 @@ class LLManager:
         self._init_started = True
         available_models = self.available_models()
         # Default to model set in Dockerfile (or argument to docker command)
-        selected_model = os.environ.get("DEFAULT_MODEL")
+        selected_model = os.environ.get(definitions.LLMGOAT_DEFAULT_MODEL)
 
         # There are no available models, the default should be downloaded
         if len(available_models) == 0:
             print(f"[ERROR] There are no available models. Downloading gemma-2...")
-            download_file(DEFAULT_MODEL["url"], DEFAULT_MODELS_FOLDER, DEFAULT_MODEL["name"])
+            download_file(DEFAULT_MODEL["url"], definitions.DEFAULT_MODELS_FOLDER, DEFAULT_MODEL["name"])
             # TODO: check that the hash matches
             print(f"[INFO] Default model correctly downloaded, loading it...")
             self.load_model(DEFAULT_MODEL["name"])
@@ -86,14 +85,14 @@ class LLManager:
             print(f"[INFO] Loading model: {model}")
             
             # get number of CPU cores + GPU layers
-            n_threads = min(os.cpu_count(), int(os.environ.get("N_THREADS", os.cpu_count())))
-            n_gpu_layers = int(os.environ.get("N_GPU_LAYERS", 0))
+            n_threads = min(os.cpu_count(), int(os.environ.get(definitions.LLMGOAT_N_THREADS)))
+            n_gpu_layers = int(os.environ.get(definitions.LLMGOAT_N_GPU_LAYERS))
             
             # explicitly free the memory taken by the current model
             self.free_llm_instance()
             
             # load the LLM
-            model_path = os.path.join(DEFAULT_MODELS_FOLDER, model)
+            model_path = os.path.join(definitions.DEFAULT_MODELS_FOLDER, model)
             self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers)
             # Set current model name
             self._current_model = model
@@ -106,7 +105,7 @@ class LLManager:
             raise RuntimeError("Model not loaded yet")
         return self._llm_instance
     
-    def available_models(self, models_dir=DEFAULT_MODELS_FOLDER):
+    def available_models(self, models_dir=definitions.DEFAULT_MODELS_FOLDER):
         return [f for f in os.listdir(models_dir) if f.endswith(".gguf")]
     
     def get_current_model_name(self):
@@ -123,4 +122,4 @@ class LLManager:
             )
             return output["choices"][0]["text"].strip()
         except:
-            return "Alpine Goat" # Fallback
+            return "Error 500: The goat chewed on the server cables again." # Fallback

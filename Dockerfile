@@ -4,9 +4,6 @@ FROM python:3.10-slim
 WORKDIR /app
 
 # Set environment variables
-ENV DEFAULT_MODEL=gemma-2.gguf
-ENV N_GPU_LAYERS=0
-ENV N_THREADS=16
 ENV PYTHONUNBUFFERED=1
 
 # Copy stuff
