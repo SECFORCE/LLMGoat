@@ -340,7 +340,6 @@ mark {
 
 /* chat styles */
 .chat-container {
-  font-family: Electrolize;
   background-color: #1f48f2;
   display: flex;
   flex-direction: column;
@@ -363,10 +362,12 @@ mark {
 .messages {
   flex: 1;
   display: flex;
-  flex-direction: column;    
+  flex-direction: column;
   padding: 1rem;
   overflow-y: auto;
   max-height: 60vh;
+  font-family: Electrolize;
+  font-size: 16px;
   scrollbar-color: #1f42f2 #f1f1f1;
 }
 
@@ -415,7 +416,7 @@ mark {
 }
 
 .sender-label {
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: bold;
   margin-bottom: 0.25rem;
   display: block;
@@ -466,8 +467,8 @@ animation-delay: 0.4s;
 .input-bar textarea {
   flex: 1;
   padding: 0.6rem;
-  font-family: inherit;
-  font-size: inherit;
+  font-family: Electrolize;
+  font-size: 16px;
   resize: none; /* prevents manual resize */
   line-height: 1;
   height: 50px;
@@ -610,6 +611,7 @@ animation-delay: 0.4s;
 
 #reviews-list {
   font-family: Electrolize;
+  font-size: 16px;
   margin: 0.2em 10px 0.75em 10px;
   padding: 0;
   overflow-y: auto;
@@ -759,6 +761,7 @@ animation-delay: 0.4s;
   white-space: pre-wrap;
   /*font-family: inherit;*/
   font-family: Electrolize;
+  font-size: 16px;
   background: #f9f9f9;
   color: #000000;
   line-height: 1;
