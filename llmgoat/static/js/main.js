@@ -44,7 +44,7 @@ export function initModelSelector() {
     select.disabled = true;
 
     try {
-      const res = await fetch("/set_model", {
+      const res = await fetch("/api/set_model", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model_name: selectedModel }),

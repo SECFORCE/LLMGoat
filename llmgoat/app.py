@@ -51,7 +51,24 @@ def index():
         selected_model=LLManager().get_current_model_name()
     )
 
-@app.route("/set_model", methods=["POST"])
+@app.route("/challenges/<challenge_id>")
+def load_challenge(challenge_id):
+    challenge_template = f"challenges/{challenge_id}.html"
+
+    if not os.path.exists(os.path.join(definitions.MAIN_DIR, "templates", challenge_template)):
+        abort(404)
+
+    return render_template(
+        "layout.html",
+        challenges=OWASP_TOP_10,
+        current_challenge=challenge_id,
+        completed_challenges=session.get("completed_challenges", []),        
+        content_template=challenge_template,
+        models=LLManager().available_models(),
+        selected_model=LLManager().get_current_model_name()
+    )
+
+@app.route("/api/set_model", methods=["POST"])
 def set_model():
     # Global LLM lock: can't change the model if it's doing its thing
     acquired = llm_lock.acquire(blocking=False)
@@ -72,23 +89,6 @@ def set_model():
     finally:
         session["prompt_in_progress"] = False
         llm_lock.release()
-
-@app.route("/challenges/<challenge_id>")
-def load_challenge(challenge_id):
-    challenge_template = f"challenges/{challenge_id}.html"
-
-    if not os.path.exists(os.path.join(definitions.MAIN_DIR, "templates", challenge_template)):
-        abort(404)
-
-    return render_template(
-        "layout.html",
-        challenges=OWASP_TOP_10,
-        current_challenge=challenge_id,
-        completed_challenges=session.get("completed_challenges", []),        
-        content_template=challenge_template,
-        models=LLManager().available_models(),
-        selected_model=LLManager().get_current_model_name()
-    )
 
 @app.route("/api/<challenge_id>", methods=["POST"])
 def challenge_api(challenge_id):    
