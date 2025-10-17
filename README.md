@@ -77,10 +77,9 @@ The compose files already contain default values that allow you to partially con
 
 ## Run locally
 
-| :exclamation: **Disclaimer**                                                                                  |
-| ------------------------------------------------------------------------------------------------------------- |
-| **Even if we made it possible to install LLMGOAT locally, we strongly discourage you to use it this way.** |
-| **Since this is an intentionally vulnerable application it may harm your system if it has access to it.**  |
+| :exclamation: **Disclaimer** |
+| ---------------------------- |
+| **Even if we made it possible to install LLMGOAT locally, we strongly discourage you to use it this way. Since this is an intentionally vulnerable application it may harm your system if it has access to it.** |
 
 If you want to run it locally you can install it in the following ways.
 

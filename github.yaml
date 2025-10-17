@@ -1,10 +1,8 @@
-name: llmgoat
+name: llmgoat-github
 services:
-  llmgoat:
-    container_name: llmgoat
-    build: 
-      context: .
-    image: llmgoat:latest
+  llmgoat-cpu:
+    container_name: llmgoat-cpu
+    image: ghcr.io/secforce/llmgoat-cpu:latest
     environment:
       - LLMGOAT_SERVER_HOST=0.0.0.0 # Customise the server host
       - LLMGOAT_SERVER_PORT=5000 # Customise the server port
@@ -20,10 +18,7 @@ services:
 
   llmgoat-gpu:
     container_name: llmgoat-gpu
-    build: 
-      context: .
-      dockerfile: ./Dockerfile.gpu
-    image: llmgoat-gpu:latest
+    image: ghcr.io/secforce/llmgoat-gpu:latest
     environment:
       - LLMGOAT_SERVER_HOST=0.0.0.0 # Customise the server host
       - LLMGOAT_SERVER_PORT=5000 # Customise the server port
