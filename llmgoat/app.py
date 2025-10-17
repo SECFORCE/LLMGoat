@@ -31,6 +31,14 @@ OWASP_TOP_10 = [
 
 llm_lock = threading.Lock()
 
+# Log requests (actually enabled only if running in verbose mode)
+@app.before_request
+def log_request_info():
+    if request.path in definitions.LOG_EXCLUDED_PATHS or request.path.startswith(definitions.LOG_EXCLUDED_PREFIXES):
+        return
+    app.logger.info(f"{request.method} {request.path} from {request.remote_addr}")
+
+
 @app.route("/")
 def index():    
     return render_template(
@@ -162,6 +170,18 @@ def parse_args():
     set_env_if_empty(definitions.LLMGOAT_N_THREADS, str(args.threads))
     set_env_if_empty(definitions.LLMGOAT_N_GPU_LAYERS, str(args.gpu_layers))
     set_env_if_empty(definitions.LLMGOAT_VERBOSE, str(int(args.verbose))) # "1" if True, "0" otherwise
+
+    # Get if running in verbose mode, args value can't be used because the ENV takes precedence 
+    verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
+    verbose = True if verbose_env_value == "1" else False
+    
+    # Configure logging
+    from llmgoat.utils.llama_logger import setup_llama_logging
+    from llmgoat.utils.flask_logger import setup_flask_logging
+    from llmgoat.utils.hf_logger import setup_hf_logging
+    setup_llama_logging(verbose=verbose)
+    setup_flask_logging(app, verbose=verbose)
+    setup_hf_logging()
 
 def main():
     banner(__version__)

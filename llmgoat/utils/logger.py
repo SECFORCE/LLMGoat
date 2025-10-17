@@ -28,7 +28,8 @@ class Logger:
         print(log_line, file=sys.stdout)
 
     def debug(self, message: str):
-        is_verbose = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
+        verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
+        is_verbose = True if verbose_env_value == "1" else False
         if is_verbose:
             self._log("DEBUG", message)
 

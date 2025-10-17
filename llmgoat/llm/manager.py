@@ -1,10 +1,11 @@
 import os
 import gc
 from llama_cpp import Llama
-from transformers import BlipProcessor, BlipForConditionalGeneration
+from transformers import BlipProcessor, BlipForConditionalGeneration, utils as TransformersUtils
 from llmgoat.utils import definitions
 from llmgoat.utils.logger import goatlog
 from llmgoat.utils.helpers import download_file, sha256_of_file
+from llmgoat.utils.llama_logger import capture_llama_prints
 
 # Constant values
 DEFAULT_MODEL = {
@@ -32,6 +33,8 @@ class LLManager:
         goatlog.info(f"Downloading 'Salesforce/blip-image-captioning-base'...")
         BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
         BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+        goatlog.info(f"Download of 'Salesforce/blip-image-captioning-base' completed")
+
 
     def init(self):
         if self._init_started:
@@ -63,6 +66,13 @@ class LLManager:
         else:
             goatlog.info(f"Loading the first available model: {available_models[0]}")
             self.load_model(available_models[0])
+
+        # Set HF verbosity
+        verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
+        is_silent = True if verbose_env_value == "0" else False
+        if is_silent:
+            TransformersUtils.logging.disable_progress_bar()
+            TransformersUtils.logging.set_verbosity_error()
 
         # Load additional stuff
         self.load_additional_models()
@@ -97,7 +107,8 @@ class LLManager:
             model_path = os.path.join(definitions.DEFAULT_MODELS_FOLDER, model)
             verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
             is_verbose = True if verbose_env_value == "1" else False
-            self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers, verbose=is_verbose)
+            with capture_llama_prints():
+                self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers, verbose=is_verbose)
             # Set current model name
             self._current_model = model
 
