@@ -36,4 +36,11 @@ services:
     volumes:
       - ${HOME}/.LLMGoat/models:/root/.LLMGoat/models
       - ${HOME}/.LLMGoat/cache:/root/.LLMGoat/cache # To avoid downloading each time the model for challenge A09      
-        
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
