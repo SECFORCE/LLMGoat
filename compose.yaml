@@ -17,4 +17,23 @@ services:
     volumes:
       - ${HOME}/.LLMGoat/models:/root/.LLMGoat/models
       - ${HOME}/.LLMGoat/cache:/root/.LLMGoat/cache # To avoid downloading each time the model for challenge A09
+
+  llmgoat-gpu:
+    container_name: llmgoat-gpu
+    build: 
+      context: .
+      dockerfile: ./Dockerfile.gpu
+    image: llmgoat-gpu:latest
+    environment:
+      - LLMGOAT_SERVER_HOST=0.0.0.0 # Customise the server host
+      - LLMGOAT_SERVER_PORT=5000 # Customise the server port
+      - LLMGOAT_DEFAULT_MODEL=gemma-2.gguf # Customise the initial model (should be available in the models folder)
+      - LLMGOAT_N_THREADS=16 # Customise the number of threads to use (max value used is the total number of cores)
+      - LLMGOAT_N_GPU_LAYERS=20 # Use this to enable GPU-usage. 20 is a good starting value
+      - LLMGOAT_VERBOSE=0 # "1" for verbose, "0" for silent
+    ports:
+      - "${LLMGOAT_SERVER_PORT:-5000}:${LLMGOAT_SERVER_PORT:-5000}"
+    volumes:
+      - ${HOME}/.LLMGoat/models:/root/.LLMGoat/models
+      - ${HOME}/.LLMGoat/cache:/root/.LLMGoat/cache # To avoid downloading each time the model for challenge A09      
         

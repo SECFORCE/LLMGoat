@@ -1,0 +1,69 @@
+FROM nvidia/cuda:12.2.2-devel-ubuntu22.04
+
+# Set working directory
+WORKDIR /app
+
+# Environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV CUDA_DOCKER_ARCH=all
+ENV GGML_CUDA=1
+
+# Copy stuff
+COPY pyproject.toml .
+COPY README.md .
+COPY llmgoat ./llmgoat
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    bash coreutils \
+    python3.10 \
+    python3-pip \
+    python3.10-venv \
+    git \
+    build-essential \
+    ninja-build \
+    cmake \
+    curl \
+    wget \
+    ccache \
+    ocl-icd-opencl-dev opencl-headers clinfo \
+    libclblast-dev libopenblas-dev \
+    && mkdir -p /etc/OpenCL/vendors && echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip
+RUN pip install --no-cache-dir --upgrade pip
+
+# Install Python dependencies (excluding torch to avoid overwrite)
+RUN pip install --no-cache-dir \
+    flask==3.1.2 \
+    numpy==2.2.6 \
+    pillow==11.3.0 \
+    sentence-transformers==5.1.1 \
+    tqdm==4.67.1 \
+    transformers==4.57.1 \
+    waitress==3.0.2
+
+# Compile llama-cpp-python with CUDA support
+RUN export LD_LIBRARY_PATH=/usr/local/cuda/lib64/stubs:$LD_LIBRARY_PATH && \
+    ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 && \
+    CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=61 -DGGML_OPENMP=ON" \
+    FORCE_CMAKE=1 \
+    NINJA_NUM_JOBS=$(nproc) \
+    pip install --no-cache-dir llama-cpp-python==0.3.16 && \
+    rm /usr/local/cuda/lib64/stubs/libcuda.so.1
+
+# Reinstall pure CPU-only torch to avoid CUDA linkage errors
+RUN pip uninstall -y torch torchvision torchaudio && \
+    pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+    torch==2.8.0 torchvision torchaudio
+
+# Install the app
+RUN pip install --no-cache-dir --no-deps .
+
+# Expose the port for LLMGoat
+EXPOSE 5000
+
+# Run the app
+ENTRYPOINT ["llmgoat"]
