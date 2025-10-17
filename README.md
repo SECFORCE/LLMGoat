@@ -124,15 +124,15 @@ llmgoat --help
 
  Start LLMGoat
 
-╭─ Options ───────────────────────────────────────────────────────────────────────────────────────╮
-│ --host         -h        TEXT     Host for API server (e.g. '0.0.0.0') [default: 127.0.0.1]     │
-│ --port         -p        INTEGER  Port for API server [default: 5000]                           │
-│ --model        -m        TEXT     The default model to use [default: gemma-2]                   │
-│ --threads      -t        INTEGER  Number of LLM threads [default: 16]                           │
-│ --gpu-layers   -g        INTEGER  Number of GPU layers to use [default: 0 (no GPU)]             │
-│ --verbose      -v                 Display verbose output                                        │
-│ --help                            Show this message and exit                                    │
-╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ───────────────────────────────────────────────────────────────────────────────╮
+│ --host        -h    TEXT     Host for API server (e.g. '0.0.0.0') [default: 127.0.0.1]  │
+│ --port        -p    INTEGER  Port for API server [default: 5000]                        │
+│ --model       -m    TEXT     The default model to use [default: gemma-2]                │
+│ --threads     -t    INTEGER  Number of LLM threads [default: 16]                        │
+│ --gpu-layers  -g    INTEGER  Number of GPU layers to use [default: 0 (no GPU)]          │
+│ --verbose     -v             Display verbose output                                     │
+│ --help                       Show this message and exit                                 │
+╰─────────────────────────────────────────────────────────────────────────────────────────╯
 
 ```
 
