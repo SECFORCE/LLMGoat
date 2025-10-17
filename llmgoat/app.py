@@ -9,9 +9,8 @@ from flask import Flask, render_template, request, jsonify, abort, session, redi
 from waitress import serve
 from llmgoat import __title__, __version__, __description__
 from llmgoat.llm.manager import LLManager
-from llmgoat.utils import definitions
+from llmgoat.utils import definitions, helpers
 from llmgoat.utils.logger import goatlog
-from llmgoat.utils.helpers import banner, ensure_folders, set_env_if_empty
 
 app = Flask(__name__)
 app.secret_key = "your-super-secret-key"  # Needed for session support
@@ -164,12 +163,12 @@ def parse_args():
 
     # Set ENV variables via CLI args, if these are already set keep them as they were
     # (ENV variables take precedence)
-    set_env_if_empty(definitions.LLMGOAT_SERVER_HOST, args.host)
-    set_env_if_empty(definitions.LLMGOAT_SERVER_PORT, str(args.port))
-    set_env_if_empty(definitions.LLMGOAT_DEFAULT_MODEL, args.model)
-    set_env_if_empty(definitions.LLMGOAT_N_THREADS, str(args.threads))
-    set_env_if_empty(definitions.LLMGOAT_N_GPU_LAYERS, str(args.gpu_layers))
-    set_env_if_empty(definitions.LLMGOAT_VERBOSE, str(int(args.verbose))) # "1" if True, "0" otherwise
+    helpers.set_env_if_empty(definitions.LLMGOAT_SERVER_HOST, args.host)
+    helpers.set_env_if_empty(definitions.LLMGOAT_SERVER_PORT, str(args.port))
+    helpers.set_env_if_empty(definitions.LLMGOAT_DEFAULT_MODEL, args.model)
+    helpers.set_env_if_empty(definitions.LLMGOAT_N_THREADS, str(args.threads))
+    helpers.set_env_if_empty(definitions.LLMGOAT_N_GPU_LAYERS, str(args.gpu_layers))
+    helpers.set_env_if_empty(definitions.LLMGOAT_VERBOSE, str(int(args.verbose))) # "1" if True, "0" otherwise
 
     # Get if running in verbose mode, args value can't be used because the ENV takes precedence 
     verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
@@ -184,9 +183,11 @@ def parse_args():
     setup_hf_logging()
 
 def main():
-    banner(__version__)
+    helpers.banner(__version__)
     parse_args()
-    ensure_folders()
+    if not helpers.is_running_in_container():
+        helpers.disclaimer()
+    helpers.ensure_folders()
 
     # Init the Singleton
     LLManager().init()

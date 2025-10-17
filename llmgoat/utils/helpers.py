@@ -92,3 +92,50 @@ def download_file(url, output_folder, filename=None, show_progress=True):
         progress.close()
     
     return output_path
+
+def is_running_in_container() -> bool:
+    """
+    Detect if the current process is running inside a container.
+    Works for Docker, Podman, Kubernetes, etc.
+    """
+    try:
+        # Common indicator: existence of /.dockerenv file
+        if os.path.exists("/.dockerenv"):
+            return True
+
+        # Check cgroup info for container-specific markers
+        with open("/proc/1/cgroup", "rt") as f:
+            content = f.read()
+            if any(keyword in content for keyword in ("docker", "kubepods", "containerd", "podman")):
+                return True
+    except Exception:
+        pass
+
+    return False
+
+def disclaimer():
+    """
+    Print a big visual disclaimer warning the user that this app is intentionally vulnerable.
+    """
+    RED = "\033[91m"
+    YELLOW = "\033[93m"
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+
+    message = f"""
+{RED}{'=' * 90}
+{BOLD}{' ' * 26}⚠️ WARNING: RUNNING ON HOST SYSTEM! ⚠️{RESET}{RED}
+{'=' * 90}{RESET}
+
+{YELLOW}{BOLD}This application is intentionally vulnerable and should not be run on a host system!
+It is designed for testing and educational use only. 
+Run it inside a secure, disposable container.{RESET}
+
+{RED}You are solely responsible for any damage, data loss, or security issues
+caused by running this software on your machine.{RESET}
+
+{RED}{'=' * 90}{RESET}
+"""
+
+    print(message)
+    input(f"{BOLD}Press Enter to acknowledge and continue...{RESET}\n")

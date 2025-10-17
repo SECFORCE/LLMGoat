@@ -62,7 +62,7 @@ We **strongly** suggest you to set the `CUDA_ARCH` to speed up the build process
 
 The GPU Dockerfile has been thorougly tested, but due to minor differences in your setup there may be issues while building or running the GPU version. In that case, we suggest you to sacrifice performances and use the CPU version instead.
 
-### ENV variables
+#### ENV variables
 
 The compose files already contain default values that allow you to partially configure ***LLMGoat*** based on your specific setup:
 
@@ -75,7 +75,7 @@ The compose files already contain default values that allow you to partially con
 | `LLMGOAT_N_GPU_LAYERS`   | Number of GPU layers to use (0 to disable it)        | `0`            |
 | `LLMGOAT_VERBOSE`        | Enable verbose mode (1 for verbose, 0 for silent)    | `0`            |
 
-## Run locally
+### Run locally
 
 | :exclamation: **Disclaimer** |
 | ---------------------------- |
@@ -104,7 +104,7 @@ pipx install git+https://github.com/SECFORCE/LLMGoat
 llmgoat
 ```
 
-### Options
+#### CLI Options
 
 The CLI allows you to obtain the same level of customisation as the ENV variables:
 
