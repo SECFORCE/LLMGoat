@@ -139,3 +139,9 @@ llmgoat --help
 ## 🪪 License
 
 _LLMGoat_ is released under the [GPL-3.0 LICENSE](./LICENSE)
+
+## 📚 Credits
+
+Developed by [@SECFORCE](https://www.secforce.com).
+
+Created by [Antonio Quina](https://x.com/st3r30byt3), with major contributions from [Rodrigo Fonseca](https://github.com/rlmd-fonseca) and [Angelo Delicato](https://github.com/thelicato).
