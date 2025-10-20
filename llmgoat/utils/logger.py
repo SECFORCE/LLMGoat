@@ -1,7 +1,8 @@
 import os
 import sys
 import datetime
-from  llmgoat.utils import definitions
+from llmgoat.utils import definitions
+
 
 class Logger:
     COLORS = {

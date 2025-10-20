@@ -12,10 +12,11 @@ formatter = logging.Formatter(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
+
 def setup_flask_logging(app, verbose=False, level=logging.INFO):
     """
     Configure isolated logging for a Flask app.
-    
+
     :param app: The Flask app instance.
     :param level: Logging level (default: INFO).
     """
@@ -32,9 +33,9 @@ def setup_flask_logging(app, verbose=False, level=logging.INFO):
     flask_logger.handlers.clear()
 
     # Choose handler type
-    #if log_file:
+    # if log_file:
     #    handler = logging.FileHandler(log_file)
-    #else:
+    # else:
     handler = logging.StreamHandler(sys.stdout)
 
     handler.setFormatter(formatter)

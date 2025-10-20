@@ -1,6 +1,7 @@
 import re
 import os
 
+
 def run_calculator(command: str) -> str:
     command = command.strip()
 

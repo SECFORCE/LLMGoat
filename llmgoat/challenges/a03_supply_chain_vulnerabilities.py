@@ -1,10 +1,11 @@
-from flask import request, jsonify
+from flask import jsonify
 import re
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
 from .a03_goat_calc import run_calculator
 
 FLAG = "FLAG{Baaaaaaaaaaaaad_Goat}"
+
 
 def parse_function_call(output):
     output = output.strip()
@@ -14,6 +15,7 @@ def parse_function_call(output):
         arg = match.group(2)
         return func_name, arg
     return None, None
+
 
 def handle_request(req):
     user_input = req.json.get("input", "")
@@ -50,7 +52,7 @@ def handle_request(req):
     goatlog.debug(raw_response)
 
     result = parse_function_call(raw_response)
-    
+
     if result:
         function_name, arg = result
         if function_name == "calc_plugin":

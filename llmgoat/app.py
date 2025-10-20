@@ -30,6 +30,7 @@ OWASP_TOP_10 = [
 
 llm_lock = threading.Lock()
 
+
 # Log requests (actually enabled only if running in verbose mode)
 @app.before_request
 def log_request_info():
@@ -50,6 +51,7 @@ def index():
         selected_model=LLManager().get_current_model_name()
     )
 
+
 @app.route("/challenges/<challenge_id>")
 def load_challenge(challenge_id):
     challenge_template = f"challenges/{challenge_id}.html"
@@ -67,6 +69,7 @@ def load_challenge(challenge_id):
         selected_model=LLManager().get_current_model_name()
     )
 
+
 @app.route("/api/set_model", methods=["POST"])
 def set_model():
     # Global LLM lock: can't change the model if it's doing its thing
@@ -80,7 +83,7 @@ def set_model():
         if model_name and model_name in LLManager().available_models():
             LLManager().load_model(model_name)
         return redirect(request.referrer or url_for("index"))
-    
+
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
@@ -88,6 +91,7 @@ def set_model():
     finally:
         session["prompt_in_progress"] = False
         llm_lock.release()
+
 
 @app.route("/api/<challenge_id>", methods=["POST"])
 def challenge_api(challenge_id):    
@@ -102,7 +106,7 @@ def challenge_api(challenge_id):
 
         session["prompt_in_progress"] = True
         challenge_module = importlib.import_module(f"llmgoat.challenges.{challenge_id.replace('-', '_')}")
-        #return challenge_module.handle_request(request, llm)
+        # return challenge_module.handle_request(request, llm)
         response = challenge_module.handle_request(request)
 
         # check if the challenge is solved
@@ -125,6 +129,7 @@ def challenge_api(challenge_id):
     finally:
         session["prompt_in_progress"] = False
         llm_lock.release()
+
 
 def print_custom_help():
     help_text = dedent("""
@@ -173,7 +178,7 @@ def parse_args():
     # Get if running in verbose mode, args value can't be used because the ENV takes precedence 
     verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
     verbose = True if verbose_env_value == "1" else False
-    
+
     # Configure logging
     from llmgoat.utils.llama_logger import setup_llama_logging
     from llmgoat.utils.flask_logger import setup_flask_logging
@@ -181,6 +186,7 @@ def parse_args():
     setup_llama_logging(verbose=verbose)
     setup_flask_logging(app, verbose=verbose)
     setup_hf_logging()
+
 
 def main():
     helpers.banner(__version__)
@@ -199,12 +205,13 @@ def main():
     app.register_blueprint(a04_blueprint, url_prefix="/a04_data_and_model_poisoning")
     app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
     app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
-    
+
     # Run server
     SERVER_HOST=os.environ.get(definitions.LLMGOAT_SERVER_HOST)
     SERVER_PORT=os.environ.get(definitions.LLMGOAT_SERVER_PORT)
     goatlog.info(f"Starting server at '{SERVER_HOST}:{SERVER_PORT}'")
     serve(app, host=SERVER_HOST, port=SERVER_PORT, threads=4)
+
 
 if __name__ == "__main__":
     main()

@@ -1,8 +1,9 @@
-from flask import request, jsonify
+from flask import jsonify
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
 
 FLAG = "Goats are bad"
+
 
 def handle_request(req):
     user_input = req.json.get("input", "")

@@ -8,6 +8,7 @@ import hashlib
 from tqdm import tqdm
 from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER
 
+
 def banner(version):
     print(f"""
       ░█░░░█░░░█▄█
@@ -20,35 +21,37 @@ def banner(version):
 
 """)
 
+
 def file_exists(filepath: str) -> bool:
-  """Check if a file exists at the given filepath and return a boolean."""
-  return os.path.exists(filepath)
+    """Check if a file exists at the given filepath and return a boolean."""
+    return os.path.exists(filepath)
+
 
 def create_folder_if_missing(path: str) -> None:
-  """Utility function to create a folder if missing"""
+    """Utility function to create a folder if missing"""
+    if not os.path.isdir(path):
+        os.makedirs(path)
 
-  if not os.path.isdir(path):
-    os.makedirs(path)
 
 def delete_folder_if_exists(path: str) -> None:
-  """Utility function to delete a folder if exists"""
+    """Utility function to delete a folder if exists"""
+    if os.path.isdir(path):
+        shutil.rmtree(path)
 
-  if os.path.isdir(path):
-    shutil.rmtree(path)
 
 def ensure_folders():
-  # Create the .LLMGoat folder in $HOME if missing
-  create_folder_if_missing(LLMGOAT_FOLDER)
-  # Create the models and cache folders within the above one if missing
-  create_folder_if_missing(DEFAULT_MODELS_FOLDER)
-  create_folder_if_missing(DEFAULT_CACHE_FOLDER)
+    # Create the .LLMGoat folder in $HOME if missing
+    create_folder_if_missing(LLMGOAT_FOLDER)
+
+    # Create the models and cache folders within the above one if missing
+    create_folder_if_missing(DEFAULT_MODELS_FOLDER)
+    create_folder_if_missing(DEFAULT_CACHE_FOLDER)
 
 
 def set_env_if_empty(env_var, env_value):
-  """Set an ENV variable if empty, otherwise don't change it (ENV vars take precedence!)"""
+    """Set an ENV variable if empty, otherwise don't change it (ENV vars take precedence!)"""
+    os.environ[env_var] = os.environ.get(env_var, env_value)
 
-  os.environ[env_var] = os.environ.get(env_var, env_value)
-   
 
 def sha256_of_file(filepath):
     """Calculate the SHA-256 hash of a file."""
@@ -59,14 +62,15 @@ def sha256_of_file(filepath):
             sha256_hash.update(chunk)
     return sha256_hash.hexdigest()
 
+
 def download_file(url, output_folder, filename=None, show_progress=True):
     """Download a file from a URL and save it to the specified output folder."""
     os.makedirs(output_folder, exist_ok=True)
-    
+
     # Determine filename
     if filename is None:
         filename = os.path.basename(url.split("?")[0]) or "downloaded_file"
-    
+
     output_path = os.path.join(output_folder, filename)
 
     # Stream download
@@ -90,8 +94,9 @@ def download_file(url, output_folder, filename=None, show_progress=True):
                     progress.update(len(chunk))
 
         progress.close()
-    
+
     return output_path
+
 
 def is_running_in_container() -> bool:
     """
@@ -113,6 +118,7 @@ def is_running_in_container() -> bool:
 
     return False
 
+
 def disclaimer():
     """
     Print a big visual disclaimer warning the user that this app is intentionally vulnerable.
@@ -131,7 +137,7 @@ def disclaimer():
 It is designed for testing and educational use only. 
 Run it inside a secure, disposable container.{RESET}
 
-{RED}You are solely responsible for any damage, data loss, or security issues
+{RED}You are solely responsible for any damage, data loss or security issues
 caused by running this software on your machine.{RESET}
 
 {RED}{'=' * 90}{RESET}

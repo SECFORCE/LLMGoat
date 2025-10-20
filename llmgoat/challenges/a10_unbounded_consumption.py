@@ -1,10 +1,11 @@
-from flask import request, jsonify
+from flask import jsonify
 import re
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
 from .a10_goat_evaluator import run_expression
 
 FLAG = "FLAG{goat_cpu_is_burnt}"
+
 
 def parse_function_call(output):
     output = output.strip()
@@ -14,6 +15,7 @@ def parse_function_call(output):
         arg = match.group(2)
         return func_name, arg
     return None, None
+
 
 def handle_request(req):
     user_input = req.json.get("input", "")
@@ -31,7 +33,7 @@ def handle_request(req):
         Examples:
         User: Display "ABC" three times.
         Assistant: python_evaluator('"ABC" * 3')
-        
+
         User: What is "goats" + " are great"?
         Assistant: python_evaluator('"goat" + " are great"')
 

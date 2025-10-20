@@ -1,5 +1,6 @@
 from flask import Blueprint, request, session, jsonify
-import uuid, copy
+import uuid
+import copy
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from llmgoat.llm.manager import LLManager
@@ -13,10 +14,12 @@ embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 # In-memory store: { session_id: { goat_name: [review1, review2, ...] } }
 reviews_store = {}
 
+
 def get_session_id():
     if "session_id" not in session:
         session["session_id"] = str(uuid.uuid4())
     return session["session_id"]
+
 
 DEFAULT_REVIEWS = {
     "Alpine Goat": [
@@ -39,6 +42,7 @@ DEFAULT_REVIEWS = {
     ]
 }
 
+
 @a04_blueprint.route("/add_review", methods=["POST"])
 def add_review():
     session_id = get_session_id()
@@ -56,12 +60,14 @@ def add_review():
     reviews_store[session_id] = session_reviews
     return jsonify({"success": True})
 
+
 @a04_blueprint.route("/get_reviews", methods=["GET"])
 def get_reviews():
     session_id = get_session_id()
     if session_id not in reviews_store or not reviews_store[session_id]:
         reviews_store[session_id] = copy.deepcopy(DEFAULT_REVIEWS)
     return jsonify(reviews_store[session_id])
+
 
 @a04_blueprint.route("/delete_review", methods=["DELETE"])
 def delete_review():
@@ -83,16 +89,18 @@ def delete_review():
     else:
         return jsonify({"error": "Review not found"}), 404
 
+
 @a04_blueprint.route("/reset_reviews", methods=["POST"])
 def reset_reviews():
     session_id = get_session_id()
     reviews_store[session_id] = copy.deepcopy(DEFAULT_REVIEWS)
     return jsonify({"success": True, "reviews": reviews_store[session_id]})
 
-# --- Helper functions ---
 
+# --- Helper functions ---
 def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-10))
+
 
 def get_relevant_reviews(session_reviews, selected_attributes, top_k=3):
     """Return top-k reviews most relevant to the selected attributes using embeddings."""
@@ -118,7 +126,7 @@ def get_relevant_reviews(session_reviews, selected_attributes, top_k=3):
     top_indices = np.argsort(sims)[::-1][:top_k]
     return [all_reviews[i] for i in top_indices]
 
-#@a04_blueprint.route("/", methods=["POST"])
+
 def handle_request(request):
     session_id = get_session_id()
     data = request.json or {}

@@ -36,10 +36,12 @@ if not any(getattr(h, "_is_llama_handler", False) for h in llama_logger.handlers
 # Default to INFO+ (i.e., verbose=True); you can switch at runtime with setup_llama_logging()
 _MIN_LEVEL = logging.INFO
 
+
 def _py_level_from_verbose(verbose: bool) -> int:
     # verbose=True  -> INFO+
     # verbose=False -> WARNING+
     return logging.INFO if verbose else logging.WARNING
+
 
 def set_llama_min_level(level: int):
     """
@@ -52,6 +54,7 @@ def set_llama_min_level(level: int):
     llama_logger.setLevel(level)
     logging.getLogger("llama_cpp").setLevel(level)
 
+
 def setup_llama_logging(verbose: bool = True):
     """
     Convenience API to match Llama(verbose=...):
@@ -60,6 +63,7 @@ def setup_llama_logging(verbose: bool = True):
     Call this once before creating your Llama(...) instance(s).
     """
     set_llama_min_level(_py_level_from_verbose(verbose))
+
 
 # Initialize logger levels to current min
 set_llama_min_level(_MIN_LEVEL)
@@ -72,6 +76,7 @@ try:
 except Exception:
     llama_log_callback = llama_log_set = None  # noqa: E305
 
+
 def _to_py_level(level: int) -> int:
     # llama.cpp convention: 0=DEBUG, 1=INFO, 2=WARNING, 3+=ERROR
     if level <= 0:
@@ -81,6 +86,7 @@ def _to_py_level(level: int) -> int:
     if level == 2:
         return logging.WARNING
     return logging.ERROR
+
 
 if llama_log_callback and llama_log_set:
     @llama_log_callback
@@ -118,6 +124,7 @@ if not any(getattr(h, "_is_llama_handler", False) for h in _py_wrap_logger.handl
 # Keep wrapper logger level aligned with our min level
 _py_wrap_logger.setLevel(_MIN_LEVEL)
 
+
 # =========================
 # 5) Optional: capture stray print() during sensitive phases
 # =========================
@@ -140,6 +147,7 @@ class _WriteToLogger:
         if self._buffer.strip():
             llama_logger.log(self.level, self._buffer.strip())
         self._buffer = ""
+
 
 @contextlib.contextmanager
 def capture_llama_prints(level: int = logging.INFO):

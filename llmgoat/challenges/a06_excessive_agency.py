@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import jsonify
 import re
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
@@ -29,8 +29,9 @@ users = {
         "notes": "Friendly hacker",
         "dob": "1984-01-01",
         "phone": "133-70-1337"
-    }    
+    }
 }
+
 
 def get_user_info(user_id):
     if user_id in users:
@@ -44,6 +45,7 @@ def get_user_info(user_id):
         )
     else:
         return "User not found."
+
 
 def parse_function_call(output):
     output = output.strip()
@@ -84,7 +86,7 @@ def handle_request(req):
         f"<|system|>\n{SYSTEM_PROMPT}\n"
         f"<|user|>\n{user_input}\n"
         f"<|assistant|>\n"
-    )  
+    )
 
     raw_response = LLManager().call_llm(prompt)
 
@@ -103,5 +105,3 @@ def handle_request(req):
                 "debug_prompt": prompt
             })
     return jsonify({"response": raw_response, "solved": False, "debug_prompt": prompt })
-    
-
