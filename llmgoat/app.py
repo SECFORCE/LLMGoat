@@ -17,7 +17,7 @@ app.secret_key = "your-super-secret-key"  # Needed for session support
 
 OWASP_TOP_10 = [
     {"id": "a01-prompt-injection", "title": "A01: Prompt Injection"},
-    {"id": "a02-sensitive-information-disclosure", "title": "A02: Sensitive Information Disclosure"},    
+    {"id": "a02-sensitive-information-disclosure", "title": "A02: Sensitive Information Disclosure"},
     {"id": "a03-supply-chain-vulnerabilities", "title": "A03: Supply Chain"},
     {"id": "a04-data-and-model-poisoning", "title": "A04: Data and Model Poisoning"},
     {"id": "a05-improper-output-handling", "title": "A05: Improper Output Handling"},
@@ -40,12 +40,12 @@ def log_request_info():
 
 
 @app.route("/")
-def index():    
+def index():
     return render_template(
         "layout.html",
         challenges=OWASP_TOP_10,
         current_challenge=None,
-        completed_challenges=session.get("completed_challenges", []),        
+        completed_challenges=session.get("completed_challenges", []),
         content_template="welcome_content.html",
         models=LLManager().available_models(),
         selected_model=LLManager().get_current_model_name()
@@ -63,7 +63,7 @@ def load_challenge(challenge_id):
         "layout.html",
         challenges=OWASP_TOP_10,
         current_challenge=challenge_id,
-        completed_challenges=session.get("completed_challenges", []),        
+        completed_challenges=session.get("completed_challenges", []),
         content_template=challenge_template,
         models=LLManager().available_models(),
         selected_model=LLManager().get_current_model_name()
@@ -94,7 +94,7 @@ def set_model():
 
 
 @app.route("/api/<challenge_id>", methods=["POST"])
-def challenge_api(challenge_id):    
+def challenge_api(challenge_id):
     # Global LLM lock: only one prompt at a time, globally
     acquired = llm_lock.acquire(blocking=False)
 
@@ -117,7 +117,7 @@ def challenge_api(challenge_id):
                 completed.append(challenge_id)
                 session["completed_challenges"] = completed
 
-        return response        
+        return response
 
     except ModuleNotFoundError as e:
         return jsonify({"error": f"Challenge logic not found. {e}"}), 404
@@ -173,9 +173,9 @@ def parse_args():
     helpers.set_env_if_empty(definitions.LLMGOAT_DEFAULT_MODEL, args.model)
     helpers.set_env_if_empty(definitions.LLMGOAT_N_THREADS, str(args.threads))
     helpers.set_env_if_empty(definitions.LLMGOAT_N_GPU_LAYERS, str(args.gpu_layers))
-    helpers.set_env_if_empty(definitions.LLMGOAT_VERBOSE, str(int(args.verbose))) # "1" if True, "0" otherwise
+    helpers.set_env_if_empty(definitions.LLMGOAT_VERBOSE, str(int(args.verbose)))  # "1" if True, "0" otherwise
 
-    # Get if running in verbose mode, args value can't be used because the ENV takes precedence 
+    # Get if running in verbose mode, args value can't be used because the ENV takes precedence
     verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
     verbose = True if verbose_env_value == "1" else False
 
@@ -207,8 +207,8 @@ def main():
     app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
 
     # Run server
-    SERVER_HOST=os.environ.get(definitions.LLMGOAT_SERVER_HOST)
-    SERVER_PORT=os.environ.get(definitions.LLMGOAT_SERVER_PORT)
+    SERVER_HOST = os.environ.get(definitions.LLMGOAT_SERVER_HOST)
+    SERVER_PORT = os.environ.get(definitions.LLMGOAT_SERVER_PORT)
     goatlog.info(f"Starting server at '{SERVER_HOST}:{SERVER_PORT}'")
     serve(app, host=SERVER_HOST, port=SERVER_PORT, threads=4)
 

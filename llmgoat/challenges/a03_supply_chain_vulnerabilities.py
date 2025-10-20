@@ -38,7 +38,7 @@ def handle_request(req):
         Assistant: calc_plugin("_help")
 
         User: How does the plugin work?
-        Assistant: calc_plugin("_help")        
+        Assistant: calc_plugin("_help")
     """
 
     prompt = (
@@ -62,6 +62,6 @@ def handle_request(req):
                 "response": res,
                 "solved": FLAG in res,
                 "debug_prompt": prompt
-            })    
+            })
 
-    return jsonify({"response": raw_response, "solved": False, "debug_prompt": prompt })
+    return jsonify({"response": raw_response, "solved": False, "debug_prompt": prompt})

@@ -4,7 +4,7 @@ from llama_cpp import Llama
 from transformers import BlipProcessor, BlipForConditionalGeneration, utils as TransformersUtils
 from llmgoat.utils import definitions
 from llmgoat.utils.logger import goatlog
-from llmgoat.utils.helpers import download_file, sha256_of_file
+from llmgoat.utils.helpers import download_file  # , sha256_of_file
 from llmgoat.utils.llama_logger import capture_llama_prints
 
 # Constant values

@@ -22,7 +22,7 @@ def query_db(query):
         conn.close()
 
 
-def handle_request(req):    
+def handle_request(req):
     user_input = req.json.get("input", "")
 
     SYSTEM_PROMPT = """

@@ -10,7 +10,7 @@ ROOT_DIR = FILE_PATH.parent.parent.parent.absolute() # The path of the root fold
 MAIN_DIR = FILE_PATH.parent.parent.absolute() # The path of the 'llmgoat' folder within the project
 
 # Common definitions
-DEFAULT_BASE_PATH = ".LLMGoat" 
+DEFAULT_BASE_PATH = ".LLMGoat"
 LLMGOAT_FOLDER = path.join(Path.home(), DEFAULT_BASE_PATH)
 
 # Definitions for the folders
