@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push CPU Docker image
-        id: push
+        id: push-cpu
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -42,7 +42,7 @@ jobs:
             ghcr.io/secforce/llmgoat-cpu:latest
 
       - name: Build and push GPU Docker image
-        id: push
+        id: push-gpu
         uses: docker/build-push-action@v6
         with:
           context: .
