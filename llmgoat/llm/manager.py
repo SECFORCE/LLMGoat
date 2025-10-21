@@ -92,25 +92,30 @@ class LLManager:
         goatlog.info("Model check")
 
         if self._current_model != model:
-            goatlog.info(f"Loading model: {model}")
 
-            # get number of CPU cores + GPU layers
-            n_threads = min(os.cpu_count(), int(os.environ.get(definitions.LLMGOAT_N_THREADS)))
-            n_gpu_layers = int(os.environ.get(definitions.LLMGOAT_N_GPU_LAYERS))
+            try:
+                goatlog.info(f"Loading model: {model}")
 
-            # explicitly free the memory taken by the current model
-            self.free_llm_instance()
+                # get number of CPU cores + GPU layers
+                n_threads = min(os.cpu_count(), int(os.environ.get(definitions.LLMGOAT_N_THREADS)))
+                n_gpu_layers = int(os.environ.get(definitions.LLMGOAT_N_GPU_LAYERS))
 
-            # load the LLM
-            model_path = os.path.join(definitions.DEFAULT_MODELS_FOLDER, model)
-            verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
-            is_verbose = True if verbose_env_value == "1" else False
-            with capture_llama_prints():
-                self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers, verbose=is_verbose)
-            # Set current model name
-            self._current_model = model
+                # explicitly free the memory taken by the current model
+                self.free_llm_instance()
 
-            goatlog.info(f"Hardware config: {n_threads} CPU cores, n_gpu_layers: {n_gpu_layers}")
+                # load the LLM
+                model_path = os.path.join(definitions.DEFAULT_MODELS_FOLDER, model)
+                verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
+                is_verbose = True if verbose_env_value == "1" else False
+                with capture_llama_prints():
+                    self._llm_instance = Llama(model_path=model_path, n_ctx=1024, n_threads=n_threads, n_batch=32, n_gpu_layers=n_gpu_layers, verbose=is_verbose)
+                # Set current model name
+                self._current_model = model
+
+                goatlog.info(f"Hardware config: {n_threads} CPU cores, n_gpu_layers: {n_gpu_layers}")
+            except Exception as e:
+                goatlog.error(f"An error occurred: {str(e)}")
+
 
     def get_model(self):
         if self._llm_instance is None:
