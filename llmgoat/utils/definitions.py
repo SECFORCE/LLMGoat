@@ -6,8 +6,8 @@ from os import path
 from pathlib import Path
 
 FILE_PATH = Path(__file__)
-ROOT_DIR = FILE_PATH.parent.parent.parent.absolute() # The path of the root folder
-MAIN_DIR = FILE_PATH.parent.parent.absolute() # The path of the 'llmgoat' folder within the project
+ROOT_DIR = FILE_PATH.parent.parent.parent.absolute()  # The path of the root folder
+MAIN_DIR = FILE_PATH.parent.parent.absolute()  # The path of the 'llmgoat' folder within the project
 
 # Common definitions
 DEFAULT_BASE_PATH = ".LLMGoat"
