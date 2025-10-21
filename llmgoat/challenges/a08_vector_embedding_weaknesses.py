@@ -1,7 +1,9 @@
+import os
 import json
 from flask import jsonify, request, send_file, Blueprint
 from sentence_transformers import SentenceTransformer
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.definitions import DEFAULT_CHALLENGES_FOLDER
 from llmgoat.utils.logger import goatlog
 from llmgoat.utils.helpers import challenge_response
 
@@ -22,16 +24,18 @@ FAMOUS_PEOPLE = {
 
 model = SentenceTransformer('all-MiniLM-L6-v2', device="cpu")
 
+
 VECTOR_DIMENSION = 32
 VECTOR_STORE = {title: model.encode(synopsis).tolist()[:VECTOR_DIMENSION] for title, synopsis in FAMOUS_PEOPLE.items()}
 VECTOR_STORE["Flag"] = ["a"] * VECTOR_DIMENSION
-
+VECTORS_FILENAME = "vectors.json"
+VECTORS_FILE_PATH = os.path.join(DEFAULT_CHALLENGES_FOLDER, VECTORS_FILENAME)
 
 @a08_blueprint.route('/export_vectors', methods=['GET'])
 def export_vectors():
-    with open('vectors.json', 'w') as f:
+    with open(VECTORS_FILE_PATH, 'w') as f:
         json.dump(VECTOR_STORE, f)
-    return send_file('vectors.json', as_attachment=True)
+    return send_file(VECTORS_FILE_PATH, as_attachment=True)
 
 
 @a08_blueprint.route('/import_vectors', methods=['POST'])

@@ -1,12 +1,12 @@
 import re
 import os
-from llmgoat.utils import definitions
+from llmgoat.utils.definitions import DEFAULT_CHALLENGES_FOLDER
 from llmgoat.utils.helpers import create_read_only_file
 
 
 FLAG = "FLAG{Baaaaaaaaaaaaad_Goat}"
 FLAG_FILENAME = "flag.txt"
-FLAG_FILE_PATH = os.path.join(definitions.DEFAULT_CHALLENGES_FOLDER, FLAG_FILENAME)
+FLAG_FILE_PATH = os.path.join(DEFAULT_CHALLENGES_FOLDER, FLAG_FILENAME)
 
 # Create the flag file
 create_read_only_file(FLAG_FILE_PATH, FLAG)
@@ -23,7 +23,7 @@ def run_calculator(command: str) -> str:
         filename = command[len("_readfile "):].strip()
         allowed_files = [FLAG_FILENAME]
         if filename in allowed_files:
-            full_path = os.path.join(definitions.DEFAULT_CHALLENGES_FOLDER, filename)
+            full_path = os.path.join(DEFAULT_CHALLENGES_FOLDER, filename)
             if os.path.exists(full_path):
                 with open(full_path, "r") as f:
                     return f.read()
