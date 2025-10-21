@@ -4,6 +4,7 @@ This module contains multiple helper function used throughout the codebase.
 import os
 import stat
 import shutil
+import sqlite3
 import requests
 import hashlib
 from tqdm import tqdm
@@ -31,16 +32,18 @@ def create_read_only_file(filename: str, content: str) -> None:
     """
     Creates a read-only file with the specified content if it doesn't already exist.
     """
-    if not file_exists(filename):
-        # Create and write content to the file
-        with open(filename, 'w', encoding='utf-8') as f:
-            f.write(content)
-        
-        # Make the file read-only
-        os.chmod(filename, stat.S_IREAD)
-        goatlog.info(f"Created read-only file: {filename}")
-    else:
-        goatlog.info(f"File already exists: {filename}")
+
+    if file_exists(filename):
+        return
+
+    # Create and write content to the file
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    # Make the file read-only
+    os.chmod(filename, stat.S_IREAD)
+    goatlog.info(f"Created read-only file: {filename}")
+
 
 
 def create_folder_if_missing(path: str) -> None:
@@ -53,6 +56,36 @@ def delete_folder_if_exists(path: str) -> None:
     """Utility function to delete a folder if exists"""
     if os.path.isdir(path):
         shutil.rmtree(path)
+
+def create_sqlite_db(db_name, schema_and_data):
+    """
+    Creates an SQLite database from a given schema and data structure.
+    """
+
+    if file_exists(db_name):
+        return
+
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    for table_name, table_info in schema_and_data.items():
+        # 1. Build CREATE TABLE statement
+        columns_def = ", ".join([f"{col} {dtype}" for col, dtype in table_info["columns"].items()])
+        create_stmt = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_def});"
+        cursor.execute(create_stmt)
+
+        # 2. Insert data if provided
+        data = table_info.get("data", [])
+        if data:
+            columns = list(data[0].keys())
+            placeholders = ", ".join(["?"] * len(columns))
+            insert_stmt = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({placeholders})"
+            for row in data:
+                cursor.execute(insert_stmt, tuple(row.values()))
+
+    conn.commit()
+    conn.close()
+    goatlog.info(f"Database '{db_name}' created successfully.")
 
 
 def ensure_folders():
