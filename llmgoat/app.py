@@ -144,6 +144,7 @@ def print_custom_help():
     │ --threads      -t        INTEGER  Number of LLM threads [default: 16]                           │
     │ --gpu-layers   -g        INTEGER  Number of GPU layers to use [default: 0 (no GPU)]             │
     │ --verbose      -v                 Display verbose output                                        │
+    │ --debug        -d                 Enable debug mode and get prompts                             │
     │ --help                            Show this message and exit                                    │
     ╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
     """).strip("\n")
@@ -159,6 +160,7 @@ def parse_args():
     parser.add_argument("--threads", "-t", type=int, default=os.cpu_count(), help="Number of LLM threads")
     parser.add_argument("--gpu-layers", "-g", type=int, default=0, help="Number of GPU layers to use")
     parser.add_argument("--verbose", "-v", action="store_true", help="Display verbose output")
+    parser.add_argument("--debug", "-d", action="store_true", help="Enable debug mode and get prompts")
     parser.add_argument("--help", action="store_true", help="Show this message and exit.")
 
     args = parser.parse_args()
@@ -174,6 +176,7 @@ def parse_args():
     helpers.set_env_if_empty(definitions.LLMGOAT_N_THREADS, str(args.threads))
     helpers.set_env_if_empty(definitions.LLMGOAT_N_GPU_LAYERS, str(args.gpu_layers))
     helpers.set_env_if_empty(definitions.LLMGOAT_VERBOSE, str(int(args.verbose)))  # "1" if True, "0" otherwise
+    helpers.set_env_if_empty(definitions.LLMGOAT_DEBUG, str(int(args.debug)))  # "1" if True, "0" otherwise
 
     # Get if running in verbose mode, args value can't be used because the ENV takes precedence
     verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))

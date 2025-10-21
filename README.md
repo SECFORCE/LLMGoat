@@ -88,14 +88,15 @@ The GPU Dockerfile has been thorougly tested, but due to minor differences in yo
 
 The compose files already contain default values that allow you to partially configure ***LLMGoat*** based on your specific setup:
 
-| Variable                 | Description                                          | Default        |
-| ------------------------ | ---------------------------------------------------- | -------------- |
-| `LLMGOAT_SERVER_HOST`    | Bind address                                         | `0.0.0.0`      |
-| `LLMGOAT_SERVER_PORT`    | Bind port                                            | `5000`         |
-| `LLMGOAT_DEFAULT_MODEL`  | Default model to use                                 | `gemma-2.gguf` |
-| `LLMGOAT_N_THREADS`      | Number of threads LLama can use                      | `16`           |
-| `LLMGOAT_N_GPU_LAYERS`   | Number of GPU layers to use (0 to disable it)        | `0 (cpu), 20 (gpu)`            |
-| `LLMGOAT_VERBOSE`        | Enable verbose mode (1 for verbose, 0 for silent)    | `0`            |
+| Variable                 | Description                                          | Default             |
+| ------------------------ | ---------------------------------------------------- | ------------------- |
+| `LLMGOAT_SERVER_HOST`    | Bind address                                         | `0.0.0.0`           |
+| `LLMGOAT_SERVER_PORT`    | Bind port                                            | `5000`              |
+| `LLMGOAT_DEFAULT_MODEL`  | Default model to use                                 | `gemma-2.gguf`      |
+| `LLMGOAT_N_THREADS`      | Number of threads LLama can use                      | `16`                |
+| `LLMGOAT_N_GPU_LAYERS`   | Number of GPU layers to use (0 to disable it)        | `0 (cpu), 20 (gpu)` |
+| `LLMGOAT_VERBOSE`        | Enable verbose mode (1 for verbose, 0 for silent)    | `0`                 |
+| `LLMGOAT_DEBUG`          | Enable debug mode (1 for verbose, 0 for silent)      | `0`                 |
 
 ### Run locally
 

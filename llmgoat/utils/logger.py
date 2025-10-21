@@ -3,7 +3,6 @@ import sys
 import datetime
 from llmgoat.utils import definitions
 
-
 class Logger:
     COLORS = {
         "DEBUG": "\033[94m",   # Blue
@@ -29,9 +28,9 @@ class Logger:
         print(log_line, file=sys.stdout)
 
     def debug(self, message: str):
-        verbose_env_value = os.environ.get(definitions.LLMGOAT_VERBOSE, str(int(False)))
-        is_verbose = True if verbose_env_value == "1" else False
-        if is_verbose:
+        debug_env_value = os.environ.get(definitions.LLMGOAT_DEBUG, str(int(False)))
+        is_debug = True if debug_env_value == "1" else False
+        if is_debug:
             self._log("DEBUG", message)
 
     def info(self, message: str):

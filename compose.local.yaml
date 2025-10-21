@@ -12,6 +12,7 @@ services:
       - LLMGOAT_N_THREADS=16 # Customise the number of threads to use (max value used is the total number of cores)
       - LLMGOAT_N_GPU_LAYERS=0 # Use this to enable GPU-usage. 20 is a good starting value
       - LLMGOAT_VERBOSE=0 # "1" for verbose, "0" for silent
+      - LLMGOAT_DEBUG=0 # "1" for debug, "0" for normal
     ports:
       - "${LLMGOAT_SERVER_PORT:-5000}:${LLMGOAT_SERVER_PORT:-5000}"
     volumes:
@@ -31,6 +32,7 @@ services:
       - LLMGOAT_N_THREADS=16 # Customise the number of threads to use (max value used is the total number of cores)
       - LLMGOAT_N_GPU_LAYERS=20 # Use this to enable GPU-usage. 20 is a good starting value
       - LLMGOAT_VERBOSE=0 # "1" for verbose, "0" for silent
+      - LLMGOAT_DEBUG=0 # "1" for debug, "0" for normal
     ports:
       - "${LLMGOAT_SERVER_PORT:-5000}:${LLMGOAT_SERVER_PORT:-5000}"
     volumes:

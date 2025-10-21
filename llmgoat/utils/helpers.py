@@ -8,7 +8,7 @@ import sqlite3
 import requests
 import hashlib
 from tqdm import tqdm
-from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER, DEFAULT_CHALLENGES_FOLDER, LLMGOAT_VERBOSE
+from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER, DEFAULT_CHALLENGES_FOLDER, LLMGOAT_VERBOSE, LLMGOAT_DEBUG
 from .logger import goatlog
 
 def banner(version):
@@ -174,6 +174,11 @@ def is_verbose_mode():
     verbose_env_value = os.environ.get(LLMGOAT_VERBOSE, "0")
     return verbose_env_value == "1"
 
+def is_debug_mode():
+    """Check whether debug mode is enabled (environment takes precedence)."""
+    debug_env_value = os.environ.get(LLMGOAT_DEBUG, "0")
+    return debug_env_value == "1"
+
 
 def challenge_response(response, solved, prompt=None):
     """
@@ -185,7 +190,7 @@ def challenge_response(response, solved, prompt=None):
         "solved": solved,
     }
 
-    if is_verbose_mode() and prompt:
+    if is_debug_mode() and prompt:
         data["debug_prompt"] = prompt
 
     return data
@@ -202,7 +207,7 @@ def disclaimer():
 
     message = f"""
 {RED}{'=' * 90}
-{BOLD}{' ' * 26}⚠️ WARNING: RUNNING ON HOST SYSTEM! ⚠️{RESET}{RED}
+{BOLD}{' ' * 28}WARNING: RUNNING ON HOST SYSTEM!{RESET}{RED}
 {'=' * 90}{RESET}
 
 {YELLOW}{BOLD}This application is intentionally vulnerable and should not be run on a host system!
