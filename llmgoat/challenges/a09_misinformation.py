@@ -7,6 +7,7 @@ import uuid
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
 from llmgoat.utils.definitions import MAIN_DIR
+from llmgoat.utils.helpers import challenge_response
 
 from .metadata_utils import extract_all_png_metadata_from_image
 from .image_utils import classify_image, get_image_rgb_hash
@@ -124,8 +125,4 @@ def handle_request(request):
 
     solved = "cyborg goat" in llm_response.lower()
 
-    return jsonify({
-        "response": llm_response,
-        "solved": solved,
-        "debug_prompt": prompt
-    })
+    return jsonify(challenge_response(llm_response, solved, prompt))

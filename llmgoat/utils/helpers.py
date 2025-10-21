@@ -6,7 +6,7 @@ import requests
 import shutil
 import hashlib
 from tqdm import tqdm
-from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER
+from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER, LLMGOAT_VERBOSE
 
 
 def banner(version):
@@ -117,6 +117,28 @@ def is_running_in_container() -> bool:
         pass
 
     return False
+
+
+def is_verbose_mode():
+    """Check whether verbose mode is enabled (environment takes precedence)."""
+    verbose_env_value = os.environ.get(LLMGOAT_VERBOSE, "0")
+    return verbose_env_value == "1"
+
+
+def challenge_response(response, solved, prompt=None):
+    """
+    Construct a JSON-safe dictionary for all goat challenges.
+    Includes debug_prompt only if verbose mode is enabled.
+    """
+    data = {
+        "response": response,
+        "solved": solved,
+    }
+
+    if is_verbose_mode() and prompt:
+        data["debug_prompt"] = prompt
+
+    return data
 
 
 def disclaimer():

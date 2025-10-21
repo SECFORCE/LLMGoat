@@ -3,6 +3,7 @@ from flask import jsonify, request, send_file, Blueprint
 from sentence_transformers import SentenceTransformer
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
+from llmgoat.utils.helpers import challenge_response
 
 a08_blueprint = Blueprint('a08_vector_embedding_weaknesses', __name__)
 
@@ -126,8 +127,4 @@ def handle_request(req):
 
     solved = FLAG in response
 
-    return jsonify({
-        "response": response,
-        "solved": solved,
-        "debug_prompt": prompt
-    })
+    return jsonify(challenge_response(response, solved, prompt))

@@ -1,5 +1,6 @@
 from flask import jsonify
 from llmgoat.llm.manager import LLManager
+from llmgoat.utils.helpers import challenge_response
 
 FLAG = "123 Goat Lane, Farmville"
 
@@ -59,8 +60,4 @@ def handle_request(req):
 
     solved = FLAG in response
 
-    return jsonify({
-        "response": response,
-        "solved": solved,
-        "debug_prompt": prompt
-    })
+    return jsonify(challenge_response(response, solved, prompt))

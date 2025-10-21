@@ -2,6 +2,7 @@ from flask import jsonify
 import sqlite3
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
+from llmgoat.utils.helpers import challenge_response
 
 FLAG = "{goats_hate_injections}"
 DB_PATH = "static/challenges/a05_improper_output_handling.db"
@@ -85,8 +86,4 @@ def handle_request(req):
 
     solved = FLAG in response
 
-    return jsonify({
-        "response": response,
-        "solved": solved,
-        "debug_prompt": prompt
-    })
+    return jsonify(challenge_response(response, solved, prompt))

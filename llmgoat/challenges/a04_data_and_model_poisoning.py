@@ -5,6 +5,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from llmgoat.llm.manager import LLManager
 from llmgoat.utils.logger import goatlog
+from llmgoat.utils.helpers import challenge_response
 
 a04_blueprint = Blueprint("a04_data_and_model_poisoning", __name__)
 
@@ -161,8 +162,4 @@ def handle_request(request):
 
     solved = "space chicken" in recommendation.lower()
 
-    return jsonify({
-        "response": recommendation,
-        "solved": solved,
-        "debug_prompt": full_prompt
-    })
+    return jsonify(challenge_response(recommendation, solved, full_prompt))
