@@ -2,12 +2,13 @@
 This module contains multiple helper function used throughout the codebase.
 """
 import os
-import requests
+import stat
 import shutil
+import requests
 import hashlib
 from tqdm import tqdm
-from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER, LLMGOAT_VERBOSE
-
+from .definitions import LLMGOAT_FOLDER, DEFAULT_MODELS_FOLDER, DEFAULT_CACHE_FOLDER, DEFAULT_CHALLENGES_FOLDER, LLMGOAT_VERBOSE
+from .logger import goatlog
 
 def banner(version):
     print(f"""
@@ -26,6 +27,21 @@ def file_exists(filepath: str) -> bool:
     """Check if a file exists at the given filepath and return a boolean."""
     return os.path.exists(filepath)
 
+def create_read_only_file(filename: str, content: str) -> None:
+    """
+    Creates a read-only file with the specified content if it doesn't already exist.
+    """
+    if not file_exists(filename):
+        # Create and write content to the file
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        # Make the file read-only
+        os.chmod(filename, stat.S_IREAD)
+        goatlog.info(f"Created read-only file: {filename}")
+    else:
+        goatlog.info(f"File already exists: {filename}")
+
 
 def create_folder_if_missing(path: str) -> None:
     """Utility function to create a folder if missing"""
@@ -43,9 +59,10 @@ def ensure_folders():
     # Create the .LLMGoat folder in $HOME if missing
     create_folder_if_missing(LLMGOAT_FOLDER)
 
-    # Create the models and cache folders within the above one if missing
+    # Create the models, cache and challenges folders within the above one if missing
     create_folder_if_missing(DEFAULT_MODELS_FOLDER)
     create_folder_if_missing(DEFAULT_CACHE_FOLDER)
+    create_folder_if_missing(DEFAULT_CHALLENGES_FOLDER)
 
 
 def set_env_if_empty(env_var, env_value):
