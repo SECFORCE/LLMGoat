@@ -29,6 +29,8 @@ Lastly and most importantly this is an <b><u>intentionally vulnerable</u></b> ap
 
 ## 📋 Requirements
 
+Minimum 8GB RAM for the default model. If you use larger model files YMMV.
+
 For best performance, you should run ***LLMGoat*** on a system that has an NVIDIA GPU.
 
 In this case, you will need to have:
