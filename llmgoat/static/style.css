@@ -147,6 +147,7 @@ a:visited {
   background: url("/static/icons/model-box.svg") no-repeat center center;
   margin: auto auto 1em auto;
   max-width: 300px;
+  width: 100%;
   aspect-ratio: 300 / 83;
 }
 
@@ -155,6 +156,9 @@ a:visited {
   height: calc(100% - 1rem);
   width: calc(100% - 1rem);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .model-title {
@@ -182,6 +186,13 @@ a:visited {
 
 .model-box select option {
   text-align: center;
+  font-size: 1.4rem;
+}
+
+@-moz-document url-prefix() {
+  .model-box select option {
+    font-size: 1rem; /* Firefox does not allow to set the font-family for select options so it looks bigger than it should be */
+  }
 }
 
 /* challenge side (right) */
