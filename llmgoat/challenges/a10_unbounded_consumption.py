@@ -9,14 +9,6 @@ from .a10_goat_evaluator import run_calls_batch
 FLAG = "FLAG{goat_cpu_is_burnt}"
 
 
-def contains_function_calls_old(output: str) -> bool:
-    if not output:
-        return False
-    output = output.strip()
-    # match at least one function-like call anywhere in the output (multi-line allowed)
-    return bool(re.search(r"(\w+)\s*\(\s*['\"][^'\"]+['\"]\s*\)", output, flags=re.S))
-
-
 def contains_function_calls(output: str) -> bool:
     if not output:
         return False
