@@ -19,13 +19,13 @@ This project is an open source, deliberately vulnerable environment created by <
 
 This app could be useful to security professionals, developers who work with LLMs or anyone who is simply curious about LLM vulnerabilities. While some of the challenges require some knowledge of cybersecurity attacks, others only require clever use of natural language and some common sense.
 
-You are encouraged to visit the link to the OWASP top 10 vulnerability included in each challenge description before attempting to solve the challenge, if you are unfamiliar with the vulnerability. Solutions to the challenges will be released in the coming months.
+You are encouraged to visit the link to the **OWASP Top 10** vulnerability included in each challenge description before attempting to solve the challenge, if you are unfamiliar with the vulnerability. Solutions to the challenges will be released in the coming months.
 
-By default, ***LLMGoat*** will use the <a href="https://huggingface.co/bartowski/gemma-2-9b-it-GGUF" target="_blank">gemma-2 model</a> but you can try out other models by placing the corresponding .gguf file in the models folder (defaults to $HOME/.LLMGoat/models).
+By default, ***LLMGoat*** will use the <a href="https://huggingface.co/bartowski/gemma-2-9b-it-GGUF" target="_blank">gemma-2 model</a> but you can try out other models by placing the corresponding `.gguf` file in the models folder (defaults to `$HOME/.LLMGoat/models`).
 
 As the underlying model does not handle concurrent requests, the app is intended to be single-user.
 
-Lastly and most importantly this is an <b><u>intentionally vulnerable</u></b> application and therefore you should never expose it to the Internet and ideally should run it in a fully segregated enviroment. We highly recommend you use docker rather than running it directly on your own system. If you experiment with online models also keep in mind that these should be treated as untrusted too.
+Lastly and most importantly this is an <b><u>intentionally vulnerable</u></b> application and therefore you should never expose it to the Internet and ideally should run it in a fully segregated enviroment. We highly recommend you use *Docker* rather than running it directly on your own system. If you experiment with online models also keep in mind that these should be treated as untrusted too.
 
 ## 📋 Requirements
 
@@ -37,9 +37,9 @@ In this case, you will need to have:
 - NVIDIA drivers
 - CUDA and <a href="https://developer.nvidia.com/cuda-toolkit">CUDA toolkit</a> (we used version 12.2)
 
-And if you use docker (recommended):
+And if you use Docker (recommended):
 - <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html">NVIDIA container toolkit</a> (might be necessary in some setups)
-- Docker CE (as in Linux docker might not see your GPU as explained <a href="https://forums.docker.com/t/cant-start-containers-with-gpu-access-on-linux-mint/144606">here</a>)
+- Docker CE (as in Linux Docker might not see your GPU as explained <a href="https://forums.docker.com/t/cant-start-containers-with-gpu-access-on-linux-mint/144606">here</a>)
 
 If you run it on a CPU-only system, then 10-12 cores at a minimum are recommended unless you are an extremely patient person.
 
@@ -136,7 +136,7 @@ On an Ubuntu base system, this is what worked for us:
 
 - Follow the instructions for the CPU version to install the requirements
 - Install CUDA
-```
+```sh
 sudo wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
 sudo dpkg -i cuda-keyring_1.1-1_all.deb
 sudo apt-get update
@@ -145,19 +145,19 @@ sudo apt-get update
 sudo apt-get -y install cuda-runtime-12-2
 ```
 - Reinstall torch to avoid version incompatibility
-```
+```sh
 pip uninstall -y torch torchvision torchaudio
 pip install --index-url https://download.pytorch.org/whl/cpu torch torchvision torchaudio
 ```
 - Install CUDA toolkit and add paths
-```
+```sh
 sudo apt-get install -y cuda-toolkit-12-2
 export PATH=/usr/local/cuda-12.2/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda-12.2/lib64:$LD_LIBRARY_PATH
 source ~/.bashrc
 ```
 - Reinstall llama-cpp-python with GPU support
-```
+```sh
 pip uninstall llama-cpp-python
 CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip install llama-cpp-python --no-cache-dir -vvvvv
 ```
@@ -190,6 +190,7 @@ llmgoat --help
 │ --threads     -t    INTEGER  Number of LLM threads [default: 16]                        │
 │ --gpu-layers  -g    INTEGER  Number of GPU layers to use [default: 0 (no GPU)]          │
 │ --verbose     -v             Display verbose output                                     │
+│ --debug       -d             Enable debug mode and get prompts                          │
 │ --help                       Show this message and exit                                 │
 ╰─────────────────────────────────────────────────────────────────────────────────────────╯
 
