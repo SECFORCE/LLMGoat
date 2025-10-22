@@ -9,12 +9,33 @@ from .a10_goat_evaluator import run_calls_batch
 FLAG = "FLAG{goat_cpu_is_burnt}"
 
 
-def contains_function_calls(output: str) -> bool:
+def contains_function_calls_old(output: str) -> bool:
     if not output:
         return False
     output = output.strip()
     # match at least one function-like call anywhere in the output (multi-line allowed)
     return bool(re.search(r"(\w+)\s*\(\s*['\"][^'\"]+['\"]\s*\)", output, flags=re.S))
+
+
+def contains_function_calls(output: str) -> bool:
+    if not output:
+        return False
+
+    # List of allowed functions (you already have these elsewhere)
+    allowed_funcs = {"get_order", "list_orders", "get_customer_info"}
+
+    # Check each line individually
+    for line in output.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        # Only match lines that *entirely* consist of a single allowed function call
+        m = re.fullmatch(r"(\w+)\s*\(\s*['\"]?([^'\"]*?)['\"]?\s*\)", line)
+        if m:
+            func_name = m.group(1)
+            if func_name in allowed_funcs:
+                return True
+    return False
 
 
 def handle_request(req):
