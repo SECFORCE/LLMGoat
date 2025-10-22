@@ -144,17 +144,26 @@ a:visited {
 
 /* Model selection */
 .model-box {
-  background: url("/static/icons/model-box.svg") no-repeat center center;
+  background-color: #ffda00; 
   margin: auto auto 1em auto;
-  max-width: 300px;
-  width: 100%;
+  width: 200px;
   aspect-ratio: 300 / 83;
+  clip-path: polygon(
+    12px 0%,
+    calc(100% - 12px) 0%,
+    100% 12px,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    12px 100%,
+    0% calc(100% - 12px),
+    0% 12px);
 }
 
 .model-inner-box {
   padding: 0.5rem;
   height: calc(100% - 1rem);
-  width: calc(100% - 1rem);
+  width: calc(85% - 1rem);
+  margin:auto;
   text-align: center;
   display: flex;
   flex-direction: column;
