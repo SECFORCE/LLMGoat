@@ -112,6 +112,11 @@ def challenge_api(challenge_id):
             return jsonify({"error": "Another prompt is still processing for your session. Please wait before submitting again."}), 429
 
         session["prompt_in_progress"] = True
+
+        # Ensure only specific modules can be imported (do inverse replace to match all cases)
+        if challenge_id.replace('_', '-') not in [chall["id"] for chall in OWASP_TOP_10]:
+            return jsonify({"error": f"Challenge logic not found."}), 404
+
         challenge_module = importlib.import_module(f"llmgoat.challenges.{challenge_id.replace('-', '_')}")
         # return challenge_module.handle_request(request, llm)
         response = challenge_module.handle_request(request)
