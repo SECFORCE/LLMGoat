@@ -122,6 +122,7 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
   const input = document.getElementById("input");
   const messagesDiv = document.getElementById("messages");
   const submitBtn = document.getElementById("submit-btn");
+  const selectModel = document.getElementById("model-select");
 
   let isProcessing = false;
   const originalBtnText = submitBtn ? submitBtn.textContent : "Send";
@@ -159,6 +160,7 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
     appendTypingIndicator();
 
     try {
+      selectModel.disabled = true;
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -191,6 +193,7 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
       submitBtn.disabled = false;
       input.disabled = false;
       isProcessing = false;
+      selectModel.disabled = false;
     }
   });
 
@@ -305,6 +308,7 @@ export async function resetReviews(selectedGoat) {
 export async function getRecommendation(selectedGoat, selectedTags) {
   const recBtn = document.getElementById("get-recommendation-btn");
   const recBox = document.getElementById("recommendation-box");
+  const selectModel = document.getElementById("model-select");
   let isProcessing = false;
 
   if (isProcessing) return; // prevent double clicks
@@ -319,6 +323,9 @@ export async function getRecommendation(selectedGoat, selectedTags) {
   recBtn.disabled = true;
   recBtn.textContent = "Processing...";
   recBtn.style.backgroundColor = "#888"; // disabled look
+
+  // Model cannot be changed while getting recommendation
+  selectModel.disabled = true;
 
   // Show goat chewing while waiting
   recBox.innerHTML = `<img src="/static/images/goat-chew.gif" alt="Billy chewing..." class="recommendation-goat"/>`
@@ -352,6 +359,7 @@ export async function getRecommendation(selectedGoat, selectedTags) {
     // Unlock UI
     isProcessing = false;
     recBtn.disabled = false;
+    selectModel.disabled = false;
     recBtn.textContent = "GET RECOMMENDATION";
     recBtn.style.backgroundColor = "#1f42f2"; // restore normal
   }
@@ -472,8 +480,13 @@ export async function uploadImage(fileInput, imagePreview, processBtn, outputBox
 
 // Process image
 export async function processImage(processBtn, outputBox) {
+    const selectModel = document.getElementById("model-select");
+
     setProcessButtonState(processBtn, false);
     outputBox.textContent = "Processing image...";
+
+    // Model can't be changed while processing image
+    selectModel.disabled = true;
 
     try {
         const res = await fetch("/api/a09_misinformation", { method: "POST" });
@@ -492,6 +505,7 @@ export async function processImage(processBtn, outputBox) {
         console.error("Processing error", err);
         outputBox.textContent = "Error processing image";
     } finally {
+        selectModel.disabled = false;
         setProcessButtonState(processBtn, true);
     }
 }
