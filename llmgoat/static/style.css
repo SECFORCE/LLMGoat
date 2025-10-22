@@ -295,11 +295,13 @@ mark {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
+    filter: 0 1px 1px rgb(0 0 0 / 0.05);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 9998;
 }
 
 .solved-content {
@@ -355,6 +357,57 @@ mark {
 }
 .solved-ok-btn:hover {
     background-color: #eeca01;
+}
+
+/* waiting overlay styles */
+#waiting-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    filter: 0 1px 1px rgb(0 0 0 / 0.05);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.waiting-content {
+    width: 400px;
+    height: 250px;
+    background-color: #1f48f2;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    clip-path: polygon(
+      10px 0%,
+      calc(100% - 10px) 0%,
+      100% 10px,
+      100% calc(100% - 10px),
+      calc(100% - 10px) 100%,
+      10px 100%,
+      0% calc(100% - 10px),
+      0% 10px
+    );
+}
+
+.waiting-content h2 {
+    font-size: xx-large;
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+}
+
+.waiting-goat {
+    width: 150px;
+    height: auto;
+    margin-bottom: 0.5rem;
 }
 
 

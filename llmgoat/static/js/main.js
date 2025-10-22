@@ -31,7 +31,34 @@ export function showSolvedBox(challengeId) {
 
     // Show the overlay
     overlay.style.display = "flex";
+}
 
+function showWaitingModal() {
+    // Create overlay elements
+    let overlay = document.getElementById("waiting-overlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "waiting-overlay";
+
+        // Blue centered container
+        overlay.innerHTML = `
+            <div class="solved-content">
+                <h2>Please wait... our goats are chewing through the data grass</h2>
+                <img src="/static/images/goat-base.gif" alt="The Goat is waiting" class="waiting-goat"/>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    // Show the overlay
+    overlay.style.display = "flex";
+}
+
+function hideWaitingModal() {
+    let overlay = document.getElementById("waiting-overlay");
+    if (overlay) {
+      overlay.style.display = "none";
+    }
 }
 
 export function initModelSelector() {
@@ -44,6 +71,7 @@ export function initModelSelector() {
     select.disabled = true;
 
     try {
+      showWaitingModal()
       const res = await fetch("/api/set_model", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -60,6 +88,7 @@ export function initModelSelector() {
         isProcessing = true;
         select.disabled = true;
     } finally {
+      hideWaitingModal();
       select.disabled = false;
       isProcessing = false;
     }

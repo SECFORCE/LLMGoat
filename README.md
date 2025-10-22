@@ -102,7 +102,7 @@ The compose files already contain default values that allow you to partially con
 
 | :exclamation: **Disclaimer** |
 | ---------------------------- |
-| **Even if we made it possible to install LLMGOAT locally, we strongly discourage you to use it this way. Since this is an intentionally vulnerable application it may harm your system if it has access to it.** |
+| **Even if we made it possible to install LLMGoat locally, we strongly discourage you to use it this way. Since this is an intentionally vulnerable application it may harm your system if it has access to it.** |
 
 #### CPU
 
