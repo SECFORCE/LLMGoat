@@ -12,7 +12,7 @@ from llmgoat.utils.helpers import challenge_response
 from .metadata_utils import extract_all_png_metadata_from_image
 from .image_utils import classify_image, get_image_rgb_hash
 
-a09_blueprint = Blueprint("a09_misinformation", __name__)
+a09_blueprint = Blueprint("a09-misinformation", __name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ORIGINAL_IMAGE_PATH = os.path.join(MAIN_DIR, "static", "challenges", "goat.png")
@@ -122,6 +122,8 @@ def handle_request(request):
     goatlog.debug(prompt)
 
     llm_response = LLManager().call_llm(prompt)
+
+    goatlog.debug(llm_response)
 
     solved = "cyborg goat" in llm_response.lower()
 

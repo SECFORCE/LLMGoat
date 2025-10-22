@@ -7,7 +7,7 @@ from llmgoat.utils.definitions import DEFAULT_CHALLENGES_FOLDER
 from llmgoat.utils.logger import goatlog
 from llmgoat.utils.helpers import challenge_response
 
-a08_blueprint = Blueprint('a08_vector_embedding_weaknesses', __name__)
+a08_blueprint = Blueprint('a08-vector-embedding-weaknesses', __name__)
 
 FLAG = "{goat_historian_recites_forbidden_text}"
 FAMOUS_PEOPLE = {

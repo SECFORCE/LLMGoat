@@ -44,7 +44,7 @@ function showWaitingModal() {
     overlay.innerHTML = `
       <div class="solved-content">
         <h2>Please wait... our goats are chewing through the data grass</h2>
-        <img src="/static/images/goat-base.gif" alt="The Goat is waiting" class="waiting-goat"/>
+        <img src="/static/images/goat-chew.gif" alt="The Goat is waiting" class="waiting-goat"/>
       </div>
     `;
     document.body.appendChild(overlay);
@@ -267,7 +267,7 @@ export function renderReviews(goat, dataForGoat) {
 
 export async function loadReviewsFor(goat) {
   try {
-    const data = await fetchJson("/a04_data_and_model_poisoning/get_reviews");
+    const data = await fetchJson("/api/a04-data-and-model-poisoning/get_reviews");
     const reviews = data[goat] || [];
     document.getElementById("reviews-title").textContent = goat + " Reviews";
     renderReviews(goat, reviews);
@@ -282,7 +282,7 @@ export async function addReview(goat, reviewText) {
   if (!goat) throw new Error("Goat not selected");
   if (!reviewText.trim()) return;
 
-  const res = await fetch("/a04_data_and_model_poisoning/add_review", {
+  const res = await fetch("/api/a04-data-and-model-poisoning/add_review", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ review: reviewText, goat })
@@ -294,7 +294,7 @@ export async function addReview(goat, reviewText) {
 
 export async function resetReviews(selectedGoat) {
   try {
-    const res = await fetch("/a04_data_and_model_poisoning/reset_reviews", { method: "POST" });
+    const res = await fetch("/api/a04-data-and-model-poisoning/reset_reviews", { method: "POST" });
     const data = await res.json();
     if (!res.ok) throw new Error("Reset failed");
     const reviews = data.reviews[selectedGoat] || [];
@@ -329,7 +329,7 @@ export async function getRecommendation(selectedGoat, selectedTags) {
   selectModel.disabled = true;
 
   // Show goat chewing while waiting
-  recBox.innerHTML = `<img src="/static/images/goat-chew.gif" alt="Billy chewing..." class="recommendation-goat"/>`
+  recBox.innerHTML = `<img src="/static/images/goat-base.gif" alt="Billy chewing..." class="recommendation-goat"/>`
   //recBox.innerHTML = `<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>`;
 
   try {
@@ -397,7 +397,7 @@ export async function importVectors(fileInput) {
   formData.append("file", file);
 
   try {
-    const res = await fetch("/a08_vector_embedding_weaknesses/import_vectors", {
+    const res = await fetch("/api/a08-vector-embedding-weaknesses/import_vectors", {
       method: "POST",
       body: formData,
     });
@@ -413,7 +413,7 @@ export async function importVectors(fileInput) {
 
 export async function exportVectors() {
   try {
-    const res = await fetch("/a08_vector_embedding_weaknesses/export_vectors");
+    const res = await fetch("/api/a08-vector-embedding-weaknesses/export_vectors");
     if (!res.ok) throw new Error("Export failed");
 
     const blob = await res.blob();
@@ -433,7 +433,7 @@ export async function exportVectors() {
 
 export async function resetVectors() {
   try {
-    const res = await fetch("/a08_vector_embedding_weaknesses/reset_vectors");
+    const res = await fetch("/api/a08-vector-embedding-weaknesses/reset_vectors");
     const text = await res.json();
     appendBotMessage(text.status);
   } catch (err) {
@@ -465,7 +465,7 @@ export async function uploadImage(fileInput, imagePreview, processBtn, outputBox
     formData.append("file", uploadedFile);
 
     try {
-        const res = await fetch("/a09_misinformation/upload_image", {
+        const res = await fetch("/api/a09-misinformation/upload_image", {
             method: "POST",
             body: formData,
         });
@@ -491,7 +491,7 @@ export async function processImage(processBtn, outputBox) {
     selectModel.disabled = true;
 
     try {
-        const res = await fetch("/api/a09_misinformation", { method: "POST" });
+        const res = await fetch("/api/a09-misinformation", { method: "POST" });
         if (!res.ok) {
             outputBox.textContent = "Processing failed";
             return;

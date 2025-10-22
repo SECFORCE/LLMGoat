@@ -113,8 +113,8 @@ def challenge_api(challenge_id):
 
         session["prompt_in_progress"] = True
 
-        # Ensure only specific modules can be imported (do inverse replace to match all cases)
-        if challenge_id.replace('_', '-') not in [chall["id"] for chall in OWASP_TOP_10]:
+        # Ensure only specific modules can be imported
+        if challenge_id not in [chall["id"] for chall in OWASP_TOP_10]:
             return jsonify({"error": f"Challenge logic not found."}), 404
 
         challenge_module = importlib.import_module(f"llmgoat.challenges.{challenge_id.replace('-', '_')}")
@@ -217,9 +217,9 @@ def main():
     from llmgoat.challenges.a04_data_and_model_poisoning import a04_blueprint
     from llmgoat.challenges.a08_vector_embedding_weaknesses import a08_blueprint
     from llmgoat.challenges.a09_misinformation import a09_blueprint
-    app.register_blueprint(a04_blueprint, url_prefix="/a04_data_and_model_poisoning")
-    app.register_blueprint(a08_blueprint, url_prefix="/a08_vector_embedding_weaknesses")
-    app.register_blueprint(a09_blueprint, url_prefix="/a09_misinformation")
+    app.register_blueprint(a04_blueprint, url_prefix="/api/a04-data-and-model-poisoning")
+    app.register_blueprint(a08_blueprint, url_prefix="/api/a08-vector-embedding-weaknesses")
+    app.register_blueprint(a09_blueprint, url_prefix="/api/a09-misinformation")
 
     # Run server
     SERVER_HOST = os.environ.get(definitions.LLMGOAT_SERVER_HOST)

@@ -221,6 +221,7 @@ a:visited {
   position: relative;
   display: flex;
   flex-direction: column;
+  line-height: 1.6rem;
 }
 
 .description-box {
