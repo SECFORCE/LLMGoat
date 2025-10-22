@@ -69,6 +69,13 @@ def load_challenge(challenge_id):
         selected_model=LLManager().get_current_model_name()
     )
 
+@app.route("/api/model_status", methods=["GET"])
+def get_model_status():
+    acquired = llm_lock.acquire(blocking=False)
+    if acquired:
+        llm_lock.release()
+    return jsonify({"model_busy": not acquired})
+
 
 @app.route("/api/set_model", methods=["POST"])
 def set_model():

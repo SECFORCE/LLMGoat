@@ -34,30 +34,51 @@ export function showSolvedBox(challengeId) {
 }
 
 function showWaitingModal() {
-    // Create overlay elements
-    let overlay = document.getElementById("waiting-overlay");
-    if (!overlay) {
-        overlay = document.createElement("div");
-        overlay.id = "waiting-overlay";
+  // Create overlay elements
+  let overlay = document.getElementById("waiting-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "waiting-overlay";
 
-        // Blue centered container
-        overlay.innerHTML = `
-            <div class="solved-content">
-                <h2>Please wait... our goats are chewing through the data grass</h2>
-                <img src="/static/images/goat-base.gif" alt="The Goat is waiting" class="waiting-goat"/>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-    }
+    // Blue centered container
+    overlay.innerHTML = `
+      <div class="solved-content">
+        <h2>Please wait... our goats are chewing through the data grass</h2>
+        <img src="/static/images/goat-base.gif" alt="The Goat is waiting" class="waiting-goat"/>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+  }
 
-    // Show the overlay
-    overlay.style.display = "flex";
+  // Show the overlay
+  overlay.style.display = "flex";
 }
 
 function hideWaitingModal() {
-    let overlay = document.getElementById("waiting-overlay");
-    if (overlay) {
-      overlay.style.display = "none";
+  let overlay = document.getElementById("waiting-overlay");
+  if (overlay) {
+    overlay.style.display = "none";
+  }
+}
+
+export async function initModelStatus() {
+    try {
+
+      const res = await fetch("/api/model_status", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const { model_busy } = await res.json();
+
+      if (model_busy) {
+        showWaitingModal()
+        setTimeout(initModelStatus, 1000); // check again in 1 second
+      } else (
+        hideWaitingModal()
+      )
+    } catch {
+        console.error("An error occurred while getting the status of the model")
     }
 }
 
