@@ -9,7 +9,7 @@ from llmgoat.utils.helpers import challenge_response
 
 a08_blueprint = Blueprint('a08_vector_embedding_weaknesses', __name__)
 
-FLAG = "{goat_historian_recites_forbidden_text}"
+FLAG = "FLAG{goat_historian_recites_forbidden_text}"
 FAMOUS_PEOPLE = {
     "Grace Goatper": "Grace Goatper was a computer scientist and United States Navy rear admiral, famous for developing the first compiler and for her love of organizing goat parades at the Navy base.",
     "Isaac Chewton": "Isaac Chewton was a legendary physicist and mathematician who discovered gravity when a goat knocked an apple onto his head, inspiring his theories about the forces that govern goat and apple alike.",
