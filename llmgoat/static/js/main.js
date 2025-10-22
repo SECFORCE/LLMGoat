@@ -209,7 +209,8 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
     }
 
     const content = document.createElement("div");
-    content.innerHTML = text.replace(/\n/g, "<br>");
+    content.textContent = text;
+    content.style.whiteSpace = "pre-line"; // converts "\n" to visual line breaks
     msg.appendChild(content);
 
     messagesDiv.appendChild(msg);
@@ -380,7 +381,8 @@ export function appendBotMessage(text, botName = "Billy the Goat") {
   msg.appendChild(label);
 
   const content = document.createElement("div");
-  content.innerHTML = text.replace(/\n/g, "<br>");
+  content.textContent = text;
+  content.style.whiteSpace = "pre-line"; // converts "\n" to visual line breaks
   msg.appendChild(content);
 
   messagesDiv.appendChild(msg);
