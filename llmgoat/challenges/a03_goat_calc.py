@@ -16,9 +16,9 @@ def run_calculator(command: str) -> str:
 
     # Help commands
     if command in ("_help", "help"):
-        return "GoatCalc supports expressions like '2 + 2'. For advanced usage, try commands prefixed with '_'."
+        return "This plugin supports expressions like '4 * 4'. For advanced usage, try commands prefixed with '_'."
     elif command == "_list":
-        return "Available commands: help/_help, _list, _readfile <file>"
+        return "Available commands: \n_help\n_list\n_readfile <file> (deprecated)"
     elif command.startswith("_readfile "):
         filename = command[len("_readfile "):].strip()
         allowed_files = [FLAG_FILENAME]
