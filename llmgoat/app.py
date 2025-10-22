@@ -89,7 +89,7 @@ def set_model():
         model_name = request.json.get("model_name", "")
         if model_name and model_name in LLManager().available_models():
             LLManager().load_model(model_name)
-        return redirect(request.referrer or url_for("index"))
+        return jsonify({"msg": f"Model is loaded"})
 
     except Exception as e:
         traceback.print_exc()
