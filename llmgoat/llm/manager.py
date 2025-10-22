@@ -13,7 +13,7 @@ DEFAULT_MODEL = {
     "url": "https://huggingface.co/bartowski/gemma-2-9b-it-GGUF/resolve/main/gemma-2-9b-it-Q4_K_M.gguf",
     "sha256": "13b2a7b4115bbd0900162edcebe476da1ba1fc24e718e8b40d32f6e300f56dfe"
 }
-MAX_TOKENS = 100
+MAX_TOKENS = 256
 TEMPERATURE = 0.7
 LLM_STOP = ["<|user|>", "<|system|>"]
 
