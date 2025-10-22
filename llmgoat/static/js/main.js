@@ -299,9 +299,9 @@ export async function getRecommendation(selectedGoat, selectedTags) {
   recBtn.textContent = "Processing...";
   recBtn.style.backgroundColor = "#888"; // disabled look
 
-  // Show typing dots while waiting
-  recBox.innerHTML = `<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>`;
-  //recBox.innerHTML = `<img src="{{ url_for('static', filename='images/goat-chew.gif') }}" alt="Billy chewing..." class="chew-gif" />`;
+  // Show goat chewing while waiting
+  recBox.innerHTML = `<img src="/static/images/goat-chew.gif" alt="Billy chewing..." class="recommendation-goat"/>`
+  //recBox.innerHTML = `<span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>`;
 
   try {
     const res = await fetch("/api/a04-data-and-model-poisoning", {

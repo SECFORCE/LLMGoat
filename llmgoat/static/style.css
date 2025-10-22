@@ -496,6 +496,10 @@ mark {
   color: #666;
 }
 
+.recommendation-goat {
+  width: 150px;
+}
+
 .typing-dots {
 display: flex;
 gap: 4px;
