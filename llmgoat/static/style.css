@@ -616,6 +616,7 @@ animation-delay: 0.4s;
   background-color: #1f48f2;
   color: white;
   width: 50%;
+  min-width: 600px;
   height: 255px;
   margin: 20px auto 20px auto;
   padding: 0.75em 1em;
@@ -757,7 +758,7 @@ animation-delay: 0.4s;
 
 .tag {
   display: inline-block;
-  padding: 0.3em 0.5em;
+  padding: 0.3em 0.5em 0.2em 0.5em;
   background-color: #000000;
   color: white;
   cursor: pointer;
