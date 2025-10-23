@@ -207,17 +207,15 @@ a:visited {
 /* challenge side (right) */
 
 .main-content-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin-left: 335px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  margin-left: 335px;
 }
 
 .main-content {
-  padding: 20px;
   flex: 1;
-  padding: 2rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -288,7 +286,6 @@ mark {
 
 .main-footer {
   text-align: center;
-  padding-bottom: 10px;
 }
 
 /* solved overlay styles */
@@ -799,10 +796,6 @@ animation-delay: 0.4s;
   margin: 20px auto 20px auto;
   width: 550px;
   text-align: center;
-}
-
-.main-container {
-  height: 92.5%;
 }
 
 /* A09 styles */
