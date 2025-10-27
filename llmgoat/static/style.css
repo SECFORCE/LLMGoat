@@ -212,6 +212,7 @@ a:visited {
   flex-direction: column;
   padding: 2rem 2rem 0 2rem;
   margin-left: 335px;
+  max-width: calc(100% - 399px);
 }
 
 .main-content {
@@ -451,6 +452,7 @@ mark {
   padding: 0.6rem 0.9rem;
   word-wrap: break-word;
   position: relative;
+  overflow-wrap: break-word;
 }
 
 .user-message {
