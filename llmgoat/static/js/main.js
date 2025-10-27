@@ -194,6 +194,7 @@ export function initChat({ endpoint, botName = "Bot", solvedCallback }) {
       input.disabled = false;
       isProcessing = false;
       selectModel.disabled = false;
+      input.focus();
     }
   });
 
