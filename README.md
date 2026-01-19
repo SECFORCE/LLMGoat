@@ -52,13 +52,23 @@ The *easiest* and *suggested* way of running ***LLMGoat*** is through Docker. We
 Run the CPU version using the Docker image we publish on *GitHub*:
 
 ```sh
+# On Linux/MacOS
 docker compose -f compose.github.yaml up llmgoat-cpu
+
+# On Windows
+$env:HOME=$env:USERPROFILE; docker compose -f compose.github.yaml up llmgoat-cpu
 ```
 
 Run the GPU version using the Docker image we publish on *GitHub*:
 
 ```sh
-docker compose -f compose.github.yaml up llmgoat-gpu # If that doesn't work refer to the next section
+ # If that doesn't work refer to the next section
+
+# On Linux/MacOS
+docker compose -f compose.github.yaml up llmgoat-gpu
+
+# On Windows
+$env:HOME=$env:USERPROFILE; docker compose -f compose.github.yaml up llmgoat-gpu
 ```
 
 ### Run with `docker compose` (manual build)
@@ -68,7 +78,11 @@ For the following commands we assume you cloned the repo.
 Run the CPU version by building it locally:
 
 ```sh
+# On Linux/MacOS
 docker compose -f compose.local.yaml up llmgoat-cpu
+
+# On Windows
+$env:HOME=$env:USERPROFILE; docker compose -f compose.local.yaml up llmgoat-cpu
 ```
 
 Run the GPU version by building it locally:
@@ -77,7 +91,12 @@ Run the GPU version by building it locally:
 # Build first
 docker build --build-arg CUDA_ARCH=<value> -f Dockerfile.gpu -t llmgoat-gpu:latest .
 # Then just run the service
+
+# On Linux/MacOS
 docker compose -f compose.local.yaml up llmgoat-gpu
+
+# On Windows
+$env:HOME=$env:USERPROFILE; docker compose -f compose.local.yaml up llmgoat-cpu
 ```
 
 We **strongly** suggest that you set the `CUDA_ARCH` argument to speed up the build process. You can find the value for your GPU at [https://developer.nvidia.com/cuda-gpus](https://developer.nvidia.com/cuda-gpus). Bear in mind that the format of the `CUDA_ARCH` variable is **without dots**, meaning that if the *Compute Capatibility* is `10.3` you would have to specify it as `103`.
